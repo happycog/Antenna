@@ -16,8 +16,8 @@ $plugin_info = array(
 
 /**
  * The Antenna plugin will generate the YouTube embed
- * code for a single or multiple YouTube clips. It will
- * also give you back the Author, their URL, the video title,
+ * code for a single YouTube clip. It will also give
+ * you back the Author, their URL, the video title,
  * and a thumbnail.
  *
  * @package Antenna
