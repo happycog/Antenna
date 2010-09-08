@@ -1,8 +1,10 @@
 <?php
 
 /**
- * ExpressionEngine Plugin Metadata
+ * Antenna Plugin
+ * Copyright Matt Weinberg, www.VectorMediaGroup.com
  */
+
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
 	'pi_version'		=> '1',

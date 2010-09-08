@@ -36,3 +36,10 @@ Compatibility
 It's been tested to work with PHP version 5.2.
 
 You must have the cURL library installed.
+
+Warranty/License
+-------
+
+There's no warranty of any kind. If you find a bug, please tell me and I may try to fix it. It's provided completely as-is; if something breaks, you lose data, or something else bad happens, the author(s) and owner(s) of this plugin are in no way responsible.
+
+This plugin is owned by Matt Weinberg. You can modify it and use it for your own personal or commercial projects, but you can't redistribute it.
