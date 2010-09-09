@@ -70,19 +70,15 @@ class Antenna {
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
 
-		// If it's not YouTube or Vimeo just keep on going
-		if (substr($video_url, 0, 17) == "http://vimeo.com/" || substr($video_url, 0, 23) == "http://www.youtube.com/") 
-		{
-			// Decide whether YouTube or Vimeo and assign whichever
-			if (substr($video_url, 0, 17) == "http://vimeo.com/") {
-				$url = "http://vimeo.com/api/oembed.json?url=";
-			} else {
-				$url = "http://www.youtube.com/oembed?format=json&url=";
-			}	
+		// If it's not YouTube or Vimeo, bail
+		if (strpos($video_url, "youtube.com/") !== FALSE) {
+			$url = "http://www.youtube.com/oembed?format=json&url=";
+		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
+			$url = "http://vimeo.com/api/oembed.json?url=";
 		} else {
 			$tagdata = $FNS->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
-			return;			
+			return;
 		}
 
 		$url .= urlencode($video_url) . $max_width . $max_height;
