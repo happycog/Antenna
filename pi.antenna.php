@@ -66,18 +66,18 @@ class Antenna {
 		}
 
 		//Deal with the parameters
-		$url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
+		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
 
 		// If it's not YouTube or Vimeo just keep on going
-		if (substr($url, 0, 17) == "http://vimeo.com/" || substr($url, 0, 23) == "http://www.youtube.com/") 
+		if (substr($video_url, 0, 17) == "http://vimeo.com/" || substr($video_url, 0, 23) == "http://www.youtube.com/") 
 		{
 			// Decide whether YouTube or Vimeo and assign whichever
-			if (substr($url, 0, 17) == "http://vimeo.com/") {
-				$url = "http://vimeo.com/api/oembed.json?url=" .urlencode($url) . $max_width . $max_height;
+			if (substr($video_url, 0, 17) == "http://vimeo.com/") {
+				$url = "http://vimeo.com/api/oembed.json?url=";
 			} else {
-				$url = "http://www.youtube.com/oembed?url=" .urlencode($url) . "&format=json" . $max_width . $max_height;
+				$url = "http://www.youtube.com/oembed?format=json&url=";
 			}	
 		} else {
 			$tagdata = $FNS->var_swap($tagdata, $video_data);
@@ -85,6 +85,7 @@ class Antenna {
 			return;			
 		}
 
+		$url .= urlencode($video_url) . $max_width . $max_height;
 
 		//Create the info and header variables
 		list($video_info, $video_header) = $this->curl($url);
