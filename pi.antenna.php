@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1',
+	'pi_version'		=> '1.1',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube Videos',
@@ -58,6 +58,12 @@ class Antenna {
 			"author_url"    =>  "video_author_url",
 			"thumbnail_url" =>  "video_thumbnail"
 		);
+		
+		$video_data = array();
+
+		foreach ($plugin_vars as $var) {
+			$video_data[$var] = false;
+		}
 
 		//Deal with the parameters
 		$url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
@@ -74,7 +80,7 @@ class Antenna {
 				$url = "http://www.youtube.com/oembed?url=" .urlencode($url) . "&format=json" . $max_width . $max_height;
 			}	
 		} else {
-			$tagdata = $FNS->prep_conditionals($tagdata, array());
+			$tagdata = $FNS->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;			
 		}
@@ -85,7 +91,7 @@ class Antenna {
 
 		if (!$video_info || $video_header != "200") 
 		{
-			$tagdata = $FNS->prep_conditionals($tagdata, array());
+			$tagdata = $FNS->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
