@@ -1,14 +1,14 @@
 Antenna for ExpressionEngine 1
 ========
 
-**Antenna** is a plugin that will generate the exact, most up-to-date YouTube embed code available. It also gives you access to the video's title, its author, the author's YouTube URL, and a thumbnail. All you have to do is pass it a single URL. 
+**Antenna** is a plugin that will generate the exact, most up-to-date YouTube or Vimeo embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL. 
 
-You can also output various pieces of metadata about the YouTube video.
+You can also output various pieces of metadata about the YouTube/Vimeo video.
 
 Usage
 -------
 
-	{exp:antenna url='{the_youtube_url}' max_width="232" max_height="323"}
+	{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323"}
 	    {embed_code}
 	    {video_title}
 	    {video_author}
@@ -42,4 +42,4 @@ Warranty/License
 
 There's no warranty of any kind. If you find a bug, please tell me and I may try to fix it. It's provided completely as-is; if something breaks, you lose data, or something else bad happens, the author(s) and owner(s) of this plugin are in no way responsible.
 
-This plugin is owned by Matt Weinberg. You can modify it and use it for your own personal or commercial projects, but you can't redistribute it.
+This plugin is owned by Matt Weinberg. You can modify it and use it for your own personal or commercial projects, but you can't redistribute it. Vimeo functionality added by Adam Wiggall (@turnandface).

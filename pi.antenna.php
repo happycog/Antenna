@@ -15,8 +15,8 @@ $plugin_info = array(
 );
 
 /**
- * The Antenna plugin will generate the YouTube embed
- * code for a single YouTube clip. It will also give
+ * The Antenna plugin will generate the YouTube or Vimeo embed
+ * code for a single YouTube or Vimeo clip. It will also give
  * you back the Author, their URL, the video title,
  * and a thumbnail.
  *
@@ -36,7 +36,7 @@ class Antenna {
 	}
 	
 	/**
-	 * Takes a YouTube url and parameters
+	 * Takes a YouTube or Vimeo url and parameters
 	 * does a cURL request and returns the 
 	 * the embed code and metadata to EE 
 	 *
@@ -64,54 +64,60 @@ class Antenna {
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
 
-		// If it's not YouTube just keep on going
-		if (!$url || substr($url, 0, 23) != "http://www.youtube.com/") 
+		// If it's not YouTube or Vimeo just keep on going
+		if (substr($url, 0, 17) == "http://vimeo.com/" || substr($url, 0, 23) == "http://www.youtube.com/") 
+		{
+			// Decide whether YouTube or Vimeo and assign whichever
+			if (substr($url, 0, 17) == "http://vimeo.com/") {
+				$url = "http://vimeo.com/api/oembed.json?url=" .urlencode($url) . $max_width . $max_height;
+			} else {
+				$url = "http://www.youtube.com/oembed?url=" .urlencode($url) . "&format=json" . $max_width . $max_height;
+			}	
+		} else {
+			$tagdata = $FNS->prep_conditionals($tagdata, array());
+			$this->return_data = $tagdata;
+			return;			
+		}
+
+
+		//Create the info and header variables
+		list($video_info, $video_header) = $this->curl($url);
+
+		if (!$video_info || $video_header != "200") 
 		{
 			$tagdata = $FNS->prep_conditionals($tagdata, array());
 			$this->return_data = $tagdata;
 			return;
 		}
 
-		$url = "http://www.youtube.com/oembed?url=" .urlencode($url) . "&format=json" . $maxwidth . $maxheight;
-		
-		//Create the youtube info and youtube header variables
-		list($youtube_info, $youtube_header) = $this->curl($url);
-
-		if (!$youtube_info || $youtube_header != "200") 
-		{
-			$tagdata = $FNS->prep_conditionals($tagdata, array());
-			$this->return_data = $tagdata;
-			return;
-		}
-		
 		//Decode the cURL data
-		$youtube_info = json_decode($youtube_info);
+		$video_info = json_decode($video_info);
 
 		//Handle a single tag
 		if ($mode == "single") 
 		{
-			$this->return_data = $youtube_info->html;
+			$this->return_data = $video_info->html;
 			return;
 		}
-		
+
 		//Handle multiple tag with tagdata
 		foreach ($plugin_vars as $key => $var) 
 		{
-			if (isset($youtube_info->$key)) 
+			if (isset($video_info->$key)) 
 			{
-				$youtube_data[$var] = $youtube_info->$key;
+				$video_data[$var] = $video_info->$key;
 			}
 		}
 
-		$tagdata = $FNS->prep_conditionals($tagdata, $youtube_data);
+		$tagdata = $FNS->prep_conditionals($tagdata, $video_data);
 
-		foreach ($youtube_data as $key => $value) 
+		foreach ($video_data as $key => $value) 
 		{
 			$tagdata = $TMPL->swap_var_single($key, $value, $tagdata);
 		}
 
 		$this->return_data = $tagdata;
-		
+
 		return;
 	}
 	
@@ -119,28 +125,28 @@ class Antenna {
 	 * Generates a CURL request to the YouTube URL
 	 * to make sure that 
 	 *
-	 * @param string $yt_url The YouTube URL
+	 * @param string $vid_url The YouTube URL
 	 * @return void
 	 */
-	public function curl($yt_url) {
+	public function curl($vid_url) {
 	    $curl = curl_init();
 	
 		// Our cURL options
 		$options = array(
-			CURLOPT_URL =>  $yt_url, 
+			CURLOPT_URL =>  $vid_url, 
 			CURLOPT_RETURNTRANSFER => 1,
 			CURLOPT_CONNECTTIMEOUT => 10,
 		); 
 		
 		curl_setopt_array($curl, $options);
 
-		$youtube_info = curl_exec($curl);
-		$youtube_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		$video_info = curl_exec($curl);
+		$video_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
 		//Close the request
 		curl_close($curl);
 
-		return array($youtube_info, $youtube_header);
+		return array($video_info, $video_header);
 	}
 	
 	/**
@@ -153,11 +159,11 @@ class Antenna {
 	{
 		ob_start();
 ?>
-Antenna is a plugin that will generate the exact, most up-to-date YouTube embed code available. It also gives you access to the video's title, its author, the author's YouTube URL, and a thumbnail. All you have to do is pass it a single URL. 
+Antenna is a plugin that will generate the exact, most up-to-date YouTube or Vimeo embed code available. It also gives you access to the video's title, its author, the author's YouTube URL, and a thumbnail. All you have to do is pass it a single URL. 
 
 You can also output various pieces of metadata about the YouTube video.
 
-{exp:antenna url='{the_youtube_url}' max_width="232" max_height="323"}
+{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323"}
     {embed_code}
     {video_title}
     {video_author}
