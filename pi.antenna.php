@@ -1,4 +1,6 @@
-<?php
+<?php  
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Antenna Plugin
@@ -22,31 +24,16 @@ $plugin_info = array(
  *
  * @package Antenna
  */
-class Antenna {
+
+class Antenna 
+{
 	public $return_data = '';
-	
-	/**
-	 * PHP4/EE compatibility
-	 *
-	 * @return void
-	 */
+
 	public function Antenna() 
 	{
-		$this->__construct();
-	}
-	
-	/**
-	 * Takes a YouTube or Vimeo url and parameters
-	 * does a cURL request and returns the 
-	 * the embed code and metadata to EE 
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		global $TMPL, $FNS;
+		$this->EE =& get_instance();
 
-		$tagdata = $TMPL->tagdata;
+		$tagdata = $this->EE->TMPL->tagdata;
 
 		//Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
@@ -66,9 +53,9 @@ class Antenna {
 		}
 
 		//Deal with the parameters
-		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
-		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
-		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
+		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
+		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
+		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
@@ -76,7 +63,7 @@ class Antenna {
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = "http://vimeo.com/api/oembed.json?url=";
 		} else {
-			$tagdata = $FNS->var_swap($tagdata, $video_data);
+			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
@@ -88,7 +75,7 @@ class Antenna {
 
 		if (!$video_info || $video_header != "200") 
 		{
-			$tagdata = $FNS->var_swap($tagdata, $video_data);
+			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
@@ -112,11 +99,11 @@ class Antenna {
 			}
 		}
 
-		$tagdata = $FNS->prep_conditionals($tagdata, $video_data);
+		$tagdata = $this->EE->functions->prep_conditionals($tagdata, $video_data);
 
 		foreach ($video_data as $key => $value) 
 		{
-			$tagdata = $TMPL->swap_var_single($key, $value, $tagdata);
+			$tagdata = $this->EE->TMPL->swap_var_single($key, $value, $tagdata);
 		}
 
 		$this->return_data = $tagdata;
@@ -155,8 +142,8 @@ class Antenna {
 	/**
 	 * ExpressionEngine plugins require this for displaying
 	 * usage in the control panel
-	 *
-	 * @return void
+	 * @access public
+	 * @return string 
 	 */
     public function usage() 
 	{
@@ -192,5 +179,8 @@ If used as a single tag, it returns the HTML embed/object code for the video. If
 	
 		return $buffer;
 	}
+	// END
 }
-?>
+
+/* End of file pi.antenna.php */ 
+/* Location: ./system/expressionengine/third_party/plugin_name/pi.antenna.php */
