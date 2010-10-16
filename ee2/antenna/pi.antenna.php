@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.1',
+	'pi_version'		=> '1.5',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube Videos',
@@ -181,6 +181,3 @@ If used as a single tag, it returns the HTML embed/object code for the video. If
 	}
 	// END
 }
-
-/* End of file pi.antenna.php */ 
-/* Location: ./system/expressionengine/third_party/plugin_name/pi.antenna.php */
