@@ -32,6 +32,12 @@ Set the max\_width and/or max\_height for whatever size your website requires. T
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
+If you're using Vimeo, you get access to three more parameters:
+
+- vimeo_byline='true/false' -- Shows the byline. Defaults to true.
+- vimeo_title='true/false' -- Shows the title on the video. Defaults to true.
+- vimeo_autoplay='true/false' -- Automatically start playback of the video. Defaults to false.
+
 **NOTE** For this to work with all urls please ensure that in Weblog/Channel -> Preferences, you have 'Automatically turn URLs and email addresses into links?' set to 'No'. 
 
 Compatibility

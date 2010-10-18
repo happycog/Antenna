@@ -56,6 +56,11 @@ class Antenna
 		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
 		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
 		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
+		
+		//Some optional Vimeo parameters
+		$vimeo_byline = ($this->EE->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
+		$vimeo_title = ($this->EE->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
+		$vimeo_autoplay = ($this->EE->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
@@ -68,7 +73,7 @@ class Antenna
 			return;
 		}
 
-		$url .= urlencode($video_url) . $max_width . $max_height;
+		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay;
 
 		//Create the info and header variables
 		list($video_info, $video_header) = $this->curl($url);
