@@ -34,7 +34,7 @@ If used as a single tag, it returns the HTML embed/object code for the video. If
 
 If you're using Vimeo, you get access to three more parameters:
 
-- vimeo_byline='true/false' -- Shows the byline. Defaults to true.
+- vimeo_byline='true/false' -- Shows the byline on the video. Defaults to true.
 - vimeo_title='true/false' -- Shows the title on the video. Defaults to true.
 - vimeo_autoplay='true/false' -- Automatically start playback of the video. Defaults to false.
 
