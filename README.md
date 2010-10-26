@@ -47,7 +47,7 @@ Compatibility
 
 Both have been tested to work with PHP version 5.2.
 
-You must have the cURL library installed.
+You must have the cURL library and PECL json installed.
 
 Warranty/License
 -------
