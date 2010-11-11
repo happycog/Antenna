@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.5',
+	'pi_version'		=> '1.6.2',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube Videos',
