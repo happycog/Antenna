@@ -137,22 +137,36 @@ class Antenna {
 	 * @return void
 	 */
 	public function curl($vid_url) {
-	    $curl = curl_init();
-	
-		// Our cURL options
-		$options = array(
-			CURLOPT_URL =>  $vid_url, 
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_CONNECTTIMEOUT => 10,
-		); 
-		
-		curl_setopt_array($curl, $options);
+		// Do we have curl?
+		if (function_exists('curl_init'))
+		{
+		    $curl = curl_init();
 
-		$video_info = curl_exec($curl);
-		$video_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+			// Our cURL options
+			$options = array(
+				CURLOPT_URL =>  $vid_url, 
+				CURLOPT_RETURNTRANSFER => 1,
+				CURLOPT_CONNECTTIMEOUT => 10,
+			); 
 
-		//Close the request
-		curl_close($curl);
+			curl_setopt_array($curl, $options);
+
+			$video_info = curl_exec($curl);
+			$video_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+			//Close the request
+			curl_close($curl);
+
+		}
+		// Do we have fopen?
+		elseif (ini_get('allow_url_fopen') === TRUE)
+		{
+			$video_header = ($video_info = file_get_contents($vid_url)) ? '200' : TRUE;
+		}
+		else
+		{
+			$video_header = $video_info = FALSE;
+		}
 
 		return array($video_info, $video_header);
 	}
