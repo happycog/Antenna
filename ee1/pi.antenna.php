@@ -25,7 +25,7 @@ $plugin_info = array(
 class Antenna {
 	public $return_data = '';
 	public $cache_name = 'antenna_urls';
-	public $refresh_cache = '+1 week';
+	public $refresh_cache = 20160;			// in minutes
 	public $cache_expired = FALSE;
 	
 	/**
@@ -220,7 +220,7 @@ class Antenna {
 		$timestamp = substr($cache, 0, $eol);
 		$cache = trim((substr($cache, $eol)));
 		
-		if ( time() > ($timestamp + strtotime($this->refresh_cache)) )
+		if ( time() > ($timestamp + ($this->refresh_cache * 60)) )
 		{
 			$this->cache_expired = TRUE;
 		}
