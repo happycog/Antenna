@@ -48,8 +48,6 @@ class Antenna {
 	public function __construct()
 	{
 		global $TMPL, $FNS;
-		
-		$cache
 
 		$tagdata = $TMPL->tagdata;
 
