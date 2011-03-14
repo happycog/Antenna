@@ -9,10 +9,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.6.2',
+	'pi_version'		=> '1.7',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
-	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube Videos',
+	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube and Vimeo Videos',
 	'pi_usage'			=> Antenna::usage()
 );
 
@@ -28,6 +28,9 @@ $plugin_info = array(
 class Antenna 
 {
 	public $return_data = '';
+	public $cache_name = 'antenna_urls';
+	public $refresh_cache = 20160;			// in mintues
+	public $cache_expired = FALSE;
 
 	public function Antenna() 
 	{
@@ -74,16 +77,30 @@ class Antenna
 			return;
 		}
 
+
 		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait;
-
-		//Create the info and header variables
-		list($video_info, $video_header) = $this->curl($url);
-
-		if (!$video_info || $video_header != "200") 
+		
+		// checking if url has been cached
+		$cached_url = $this->_check_cache($url);
+		
+		if ($this->cache_expired OR ! $cached_url)
 		{
-			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
-			$this->return_data = $tagdata;
-			return;
+			//Create the info and header variables
+			list($video_info, $video_header) = $this->curl($url);
+
+			if (!$video_info || $video_header != "200") 
+			{
+				$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
+				$this->return_data = $tagdata;
+				return;
+			}
+			
+			// write the data to cache
+			$this->_write_cache($video_info, $url);
+		}
+		else
+		{
+			$video_info = $cached_url;
 		}
 
 		//Decode the cURL data
@@ -157,6 +174,105 @@ class Antenna
 		}
 
 		return array($video_info, $video_header);
+	}
+	
+	/**
+	 * Check Cache
+	 *
+	 * Check for cached data
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	bool	Allow pulling of stale cache file
+	 * @return	mixed - string if pulling from cache, FALSE if not
+	 */
+	function _check_cache($url)
+	{	
+		// Check for cache directory
+		
+		$dir = PATH_CACHE.$this->cache_name.'/';
+		
+		if ( ! @is_dir($dir))
+		{
+			return FALSE;
+		}
+		
+		// Check for cache file
+		
+        $file = $dir.md5($url);
+		
+		if ( ! file_exists($file) OR ! ($fp = @fopen($file, 'rb')))
+		{
+			return FALSE;
+		}
+		       
+		flock($fp, LOCK_SH);
+                    
+		$cache = @fread($fp, filesize($file));
+                    
+		flock($fp, LOCK_UN);
+        
+		fclose($fp);
+
+        // Grab the timestamp from the first line
+
+		$eol = strpos($cache, "\n");
+		
+		$timestamp = substr($cache, 0, $eol);
+		$cache = trim((substr($cache, $eol)));
+		
+		if ( time() > ($timestamp + ($this->refresh_cache * 60)) )
+		{
+			$this->cache_expired = TRUE;
+		}
+		
+        return $cache;
+	}
+	
+	/**
+	 * Write Cache
+	 *
+	 * Write the cached data
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	void
+	 */
+	function _write_cache($data, $url)
+	{
+		// Check for cache directory
+		
+		$dir = PATH_CACHE.$this->cache_name.'/';
+
+		if ( ! @is_dir($dir))
+		{
+			if ( ! @mkdir($dir, 0777))
+			{
+				return FALSE;
+			}
+			
+			@chmod($dir, 0777);            
+		}
+		
+		// add a timestamp to the top of the file
+		$data = time()."\n".$data;
+		
+		
+		// Write the cached data
+		
+		$file = $dir.md5($url);
+	
+		if ( ! $fp = @fopen($file, 'wb'))
+		{
+			return FALSE;
+		}
+
+		flock($fp, LOCK_EX);
+		fwrite($fp, $data);
+		flock($fp, LOCK_UN);
+		fclose($fp);
+        
+		@chmod($file, 0777);
 	}
 	
 	/**
