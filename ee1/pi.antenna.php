@@ -74,6 +74,7 @@ class Antenna {
 		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
 		$vimeo_title = ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
 		$vimeo_autoplay = ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
+		$vimeo_portrait = ($this->EE->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
@@ -86,7 +87,7 @@ class Antenna {
 			return;
 		}
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay;
+		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait;
 
 		//Create the info and header variables
 		list($video_info, $video_header) = $this->curl($url);
