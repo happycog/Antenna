@@ -71,6 +71,8 @@ class Antenna
 			$url = "http://www.youtube.com/oembed?format=json&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = "http://vimeo.com/api/oembed.json?url=";
+		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
+			$url = "http://app.wistia.com/embed/oembed.json?url=";		
 		} else {
 			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
