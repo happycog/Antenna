@@ -192,7 +192,7 @@ class Antenna
 	{	
 		// Check for cache directory
 		
-		$dir = PATH_CACHE.$this->cache_name.'/';
+		$dir = APPPATH.'cache/'.$this->cache_name.'/';
 		
 		if ( ! @is_dir($dir))
 		{
@@ -244,7 +244,7 @@ class Antenna
 	{
 		// Check for cache directory
 		
-		$dir = PATH_CACHE.$this->cache_name.'/';
+		$dir = APPPATH.'cache/'.$this->cache_name.'/';
 
 		if ( ! @is_dir($dir))
 		{
