@@ -9,10 +9,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.7',
+	'pi_version'		=> '1.7.1',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
-	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube and Vimeo Videos',
+	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
 	'pi_usage'			=> Antenna::usage()
 );
 
@@ -29,7 +29,7 @@ class Antenna
 {
 	public $return_data = '';
 	public $cache_name = 'antenna_urls';
-	public $refresh_cache = 20160;			// in mintues
+	public $refresh_cache = 10080;			// in mintues (default is 1 week)
 	public $cache_expired = FALSE;
 
 	public function Antenna() 
@@ -59,6 +59,11 @@ class Antenna
 		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
 		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
 		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
+
+		// cache can be disabled by setting 0 as the cache_minutes param
+		if ($this->EE->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($this->EE->TMPL->fetch_param('cache_minutes'))) {
+			$this->refresh_cache = $this->EE->TMPL->fetch_param('cache_minutes');
+		}
 		
 		//Some optional Vimeo parameters
 		$vimeo_byline = ($this->EE->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
@@ -85,7 +90,7 @@ class Antenna
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
 		
-		if ($this->cache_expired OR ! $cached_url)
+		if (! $this->refresh_cache OR $this->cache_expired OR ! $cached_url)
 		{
 			//Create the info and header variables
 			list($video_info, $video_header) = $this->curl($url);
@@ -97,8 +102,10 @@ class Antenna
 				return;
 			}
 			
-			// write the data to cache
-			$this->_write_cache($video_info, $url);
+			// write the data to cache if caching hasn't been disabled
+			if ($this->refresh_cache) {
+				$this->_write_cache($video_info, $url);
+			}
 		}
 		else
 		{
@@ -287,11 +294,11 @@ class Antenna
 	{
 		ob_start();
 ?>
-Antenna is a plugin that will generate the exact, most up-to-date YouTube or Vimeo embed code available. It also gives you access to the video's title, its author, the author's YouTube URL, and a thumbnail. All you have to do is pass it a single URL. 
+Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, or Wistia embed code available. It also gives you access to the video’s title, its author, the author’s YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
 
 You can also output various pieces of metadata about the YouTube video.
 
-{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323"}
+{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120"}
     {embed_code}
     {video_title}
     {video_author}
@@ -309,6 +316,10 @@ You can also output various pieces of metadata about the YouTube video.
 Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
+
+The cache defaults to 1 week. It can be completely disabled by setting cache_minutes="0".
+
+Note for Wistia users: Wistia doesn’t return as much data as the other providers, so not all of the above variables will work. Also, you may need to contact Wistia and ask them to enable "oEmbed support" on your account for this to work.
 
 <?php
 		$buffer = ob_get_contents();
