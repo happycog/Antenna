@@ -82,7 +82,7 @@ class Antenna {
 		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
 		$vimeo_title = ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
 		$vimeo_autoplay = ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
-		$vimeo_portrait = ($this->EE->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
+		$vimeo_portrait = ($TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
@@ -109,7 +109,7 @@ class Antenna {
 
 			if (!$video_info || $video_header != "200") 
 			{
-				$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
+				$tagdata = $FNS->var_swap($tagdata, $video_data);
 				$this->return_data = $tagdata;
 				return;
 			}
