@@ -329,7 +329,7 @@ Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo
 
 You can also output various pieces of metadata about the YouTube video.
 
-{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120"  wmode="transparent|opaque|window"}
+{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120" wmode="transparent|opaque|window"}
     {embed_code}
     {video_title}
     {video_author}
