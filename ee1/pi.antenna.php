@@ -184,7 +184,7 @@ Antenna is a plugin that will generate the exact, most up-to-date YouTube or Vim
 
 You can also output various pieces of metadata about the YouTube video.
 
-{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323"}
+{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" wmode="transparent|opaque|window"}
     {embed_code}
     {video_title}
     {video_author}
@@ -200,6 +200,8 @@ You can also output various pieces of metadata about the YouTube video.
 {/exp:antenna}
 
 Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
+
+The optional wmode parameter can be used if you're experiencing issues positioning HTML content infront of the embedded media. It accepts values of transparent, opaque and window.
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
