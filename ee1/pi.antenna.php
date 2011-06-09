@@ -69,6 +69,8 @@ class Antenna {
 		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
+		$wmode = ($this->EE->TMPL->fetch_param('wmode')) ? $this->EE->TMPL->fetch_param('wmode') : "";
+		$wmode_param = ($this->EE->TMPL->fetch_param('wmode')) ? "&wmode=" . $this->EE->TMPL->fetch_param('wmode') : "";
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
@@ -81,7 +83,7 @@ class Antenna {
 			return;
 		}
 
-		$url .= urlencode($video_url) . $max_width . $max_height;
+		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param;
 
 		//Create the info and header variables
 		list($video_info, $video_header) = $this->curl($url);
@@ -95,6 +97,22 @@ class Antenna {
 
 		//Decode the cURL data
 		$video_info = json_decode($video_info);
+
+    //inject wmode transparent if required
+    if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
+      $param_str = '<param name="wmode" value="' . $wmode .'"></param>';
+      $embed_str = ' wmode="' . $wmode .'" ';
+      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normall be fixed with z-index in css
+      if ((strpos( $video_info->html, "<iframe" )) === false) {
+        //object param
+        $param_pos = strpos( $video_info->html, "<embed" );
+        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
+        //now for the embed element attr
+        $param_pos = strpos( $video_info->html, "<embed" ) + 6;
+        $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
+      }
+    }
+    
 
 		//Handle a single tag
 		if ($mode == "single") 
