@@ -1,6 +1,8 @@
 Antenna for ExpressionEngine 1 & 2
 ========
 
+**Updated with wmode support** This plugin is otherwise exactly the same as the Vector Media group original.
+
 **Antenna** is a plugin that will generate the exact, most up-to-date YouTube or Vimeo embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL. 
 
 You can also output various pieces of metadata about the YouTube/Vimeo video.
