@@ -86,7 +86,7 @@ class Antenna {
 
 		// If it's not YouTube or Vimeo, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
-			$url = "http://www.youtube.com/oembed?format=json&url=";
+			$url = "http://www.youtube.com/oembed?format=json&iframe=1&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = "http://vimeo.com/api/oembed.json?url=";
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
