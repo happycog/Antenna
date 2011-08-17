@@ -72,6 +72,8 @@ class Antenna {
 		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
+		$wmode = ($this->EE->TMPL->fetch_param('wmode')) ? $this->EE->TMPL->fetch_param('wmode') : "";
+		$wmode_param = ($this->EE->TMPL->fetch_param('wmode')) ? "&wmode=" . $this->EE->TMPL->fetch_param('wmode') : "";
 
 		// cache can be disabled by setting 0 as the cache_minutes param
 		if ($TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($TMPL->fetch_param('cache_minutes'))) {
@@ -97,7 +99,7 @@ class Antenna {
 			return;
 		}
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait;
+		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait;
 
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
@@ -127,6 +129,22 @@ class Antenna {
 
 		//Decode the cURL data
 		$video_info = json_decode($video_info);
+
+    //inject wmode transparent if required
+    if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
+      $param_str = '<param name="wmode" value="' . $wmode .'"></param>';
+      $embed_str = ' wmode="' . $wmode .'" ';
+      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normall be fixed with z-index in css
+      if ((strpos( $video_info->html, "<iframe" )) === false) {
+        //object param
+        $param_pos = strpos( $video_info->html, "<embed" );
+        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
+        //now for the embed element attr
+        $param_pos = strpos( $video_info->html, "<embed" ) + 6;
+        $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
+      }
+    }
+    
 
 		//Handle a single tag
 		if ($mode == "single") 
@@ -311,7 +329,7 @@ Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo
 
 You can also output various pieces of metadata about the YouTube video.
 
-{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120"}
+{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120" wmode="transparent|opaque|window"}
     {embed_code}
     {video_title}
     {video_author}
@@ -327,6 +345,8 @@ You can also output various pieces of metadata about the YouTube video.
 {/exp:antenna}
 
 Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
+
+The optional wmode parameter can be used if you're experiencing issues positioning HTML content infront of the embedded media. It accepts values of transparent, opaque and window.
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
