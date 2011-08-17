@@ -72,8 +72,8 @@ class Antenna {
 		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
-		$wmode = ($this->EE->TMPL->fetch_param('wmode')) ? $this->EE->TMPL->fetch_param('wmode') : "";
-		$wmode_param = ($this->EE->TMPL->fetch_param('wmode')) ? "&wmode=" . $this->EE->TMPL->fetch_param('wmode') : "";
+		$wmode = ($TMPL->fetch_param('wmode')) ? $TMPL->fetch_param('wmode') : "";
+		$wmode_param = ($TMPL->fetch_param('wmode')) ? "&wmode=" . $TMPL->fetch_param('wmode') : "";
 
 		// cache can be disabled by setting 0 as the cache_minutes param
 		if ($TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($TMPL->fetch_param('cache_minutes'))) {
