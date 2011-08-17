@@ -86,7 +86,7 @@ class Antenna {
 		$vimeo_autoplay = ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
 		$vimeo_portrait = ($TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
 
-		// If it's not YouTube or Vimeo, bail
+		// If it's not YouTube, Vimeo, or Wistia, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
 			$url = "http://www.youtube.com/oembed?format=json&iframe=1&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
@@ -134,7 +134,7 @@ class Antenna {
     if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
       $param_str = '<param name="wmode" value="' . $wmode .'"></param>';
       $embed_str = ' wmode="' . $wmode .'" ';
-      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normall be fixed with z-index in css
+      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normally be fixed with z-index in css
       if ((strpos( $video_info->html, "<iframe" )) === false) {
         //object param
         $param_pos = strpos( $video_info->html, "<embed" );
@@ -346,7 +346,7 @@ You can also output various pieces of metadata about the YouTube video.
 
 Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
 
-The optional wmode parameter can be used if you're experiencing issues positioning HTML content infront of the embedded media. It accepts values of transparent, opaque and window.
+The optional wmode parameter can be used if you're experiencing issues positioning HTML content in front of the embedded media. It accepts values of transparent, opaque and window.
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
