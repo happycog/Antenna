@@ -9,10 +9,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.8',
+	'pi_version'		=> '1.9',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
-	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
+	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
 	'pi_usage'			=> Antenna::usage()
 );
 
@@ -74,13 +74,19 @@ class Antenna
 		$vimeo_autoplay = ($this->EE->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
 		$vimeo_portrait = ($this->EE->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
 
-		// If it's not YouTube, Vimeo, or Wistia, bail
+		// Some optional Viddler parameters
+		$viddler_type = ($this->EE->TMPL->fetch_param('viddler_type')) ? "&type=" . $this->EE->TMPL->fetch_param('viddler_type') : "";
+		$viddler_ratio = ($this->EE->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $this->EE->TMPL->fetch_param('viddler_ratio') : "";
+
+		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
 			$url = "http://www.youtube.com/oembed?format=json&iframe=1&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = "http://vimeo.com/api/oembed.json?url=";
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
 			$url = "http://app.wistia.com/embed/oembed.json?url=";		
+		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
+			$url = "http://lab.viddler.com/services/oembed/?format=json&url=";		
 		} else {
 			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
@@ -88,7 +94,7 @@ class Antenna
 		}
 
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait;
+		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $viddler_type . $viddler_ratio;
 		
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
@@ -314,7 +320,7 @@ class Antenna
 	{
 		ob_start();
 ?>
-Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, or Wistia embed code available. It also gives you access to the video’s title, its author, the author’s YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
+Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. It also gives you access to the video’s title, its author, the author’s YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
 
 You can also output various pieces of metadata about the YouTube video.
 

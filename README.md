@@ -1,9 +1,9 @@
 Antenna for ExpressionEngine 1 & 2
 ========
 
-**Antenna** is a plugin that will generate the exact, most up-to-date YouTube or Vimeo embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL. 
+**Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL. 
 
-You can also output various pieces of metadata about the YouTube/Vimeo video.
+You can also output various pieces of metadata about the video.
 
 For ExpressionEngine 1 installation, pi.antenna.php should be added to /system/plugins/
 
@@ -39,6 +39,11 @@ If you're using Vimeo, you get access to three more parameters:
 - vimeo_byline='true/false' -- Shows the byline on the video. Defaults to true.
 - vimeo_title='true/false' -- Shows the title on the video. Defaults to true.
 - vimeo_autoplay='true/false' -- Automatically start playback of the video. Defaults to false.
+
+If you're using Viddler, you get access to two more parameters:
+
+- viddler_type='simple/player' -- Specifies the player type. Defaults to player.
+- viddler_ratio='widescreen/fullscreen' -- Aspect ratio will be automatically determined if not set.
 
 **NOTE** For this to work with all urls please ensure that in Weblog/Channel -> Preferences, you have 'Automatically turn URLs and email addresses into links?' set to 'No'. 
 
