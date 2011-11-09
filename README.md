@@ -52,7 +52,7 @@ Compatibility
 
 **Antenna** is compatible with ExpressionEngine 1 & 2. The version for ExpressionEngine 1 has been tested on 1.6.9 but will likely work with older versions. The version for ExpressionEngine 2 has been tested on 2.1.
 
-You must be using PHP 5.2+, though I haven't tested with PHP 5.3, and you must have the cURL library and PECL json installed.
+You must be using PHP 5.2+, though I haven't tested with PHP 5.3, and you must have either the cURL library installed or allow_url_fopen enabled.
 
 Warranty/License
 -------

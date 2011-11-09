@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.9',
+	'pi_version'		=> '1.10',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
@@ -92,13 +92,13 @@ class Antenna {
 
 		// If it's not YouTube, Vimeo, or Wistia, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE) {
-			$url = "http://www.youtube.com/oembed?format=json&iframe=1&url=";
+			$url = "http://www.youtube.com/oembed?format=xml&iframe=1&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
-			$url = "http://vimeo.com/api/oembed.json?url=";
+			$url = "http://vimeo.com/api/oembed.xml?url=";
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
-			$url = "http://app.wistia.com/embed/oembed.json?url=";
+			$url = "http://app.wistia.com/embed/oembed.xml?url=";
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
-			$url = "http://lab.viddler.com/services/oembed/?format=json&url=";		
+			$url = "http://lab.viddler.com/services/oembed/?format=xml&url=";		
 		} else {
 			$tagdata = $FNS->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
@@ -134,7 +134,7 @@ class Antenna {
 		}
 
 		//Decode the cURL data
-		$video_info = json_decode($video_info);
+		$video_info = simplexml_load_string($video_info);
 
     //inject wmode transparent if required
     if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
