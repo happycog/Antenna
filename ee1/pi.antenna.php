@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.10',
+	'pi_version'		=> '1.11',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
@@ -51,7 +51,7 @@ class Antenna {
 
 		$tagdata = $TMPL->tagdata;
 
-		//Check to see if it's a one-off tag or a pair
+		// Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
 		
 		$plugin_vars = array(
@@ -68,7 +68,7 @@ class Antenna {
 			$video_data[$var] = false;
 		}
 
-		//Deal with the parameters
+		// Deal with the parameters
 		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
 		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
 		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
@@ -80,7 +80,7 @@ class Antenna {
 			$this->refresh_cache = $TMPL->fetch_param('cache_minutes');
 		}
 
-		//Some optional Vimeo parameters
+		// Some optional Vimeo parameters
 		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
 		$vimeo_title = ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
 		$vimeo_autoplay = ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
@@ -112,7 +112,7 @@ class Antenna {
 		
 		if (! $this->refresh_cache OR $this->cache_expired OR ! $cached_url)
 		{
-			//Create the info and header variables
+			// Create the info and header variables
 			list($video_info, $video_header) = $this->curl($url);
 
 			if (!$video_info || $video_header != "200") 
@@ -133,33 +133,35 @@ class Antenna {
 			$video_info = $cached_url;
 		}
 
-		//Decode the cURL data
+		// Decode the cURL data
 		$video_info = simplexml_load_string($video_info);
 
-    //inject wmode transparent if required
-    if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
-      $param_str = '<param name="wmode" value="' . $wmode .'"></param>';
-      $embed_str = ' wmode="' . $wmode .'" ';
-      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normally be fixed with z-index in css
-      if ((strpos( $video_info->html, "<iframe" )) === false) {
-        //object param
-        $param_pos = strpos( $video_info->html, "<embed" );
-        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
-        //now for the embed element attr
-        $param_pos = strpos( $video_info->html, "<embed" ) + 6;
-        $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
-      }
-    }
-    
+		// Inject wmode transparent if required
+    	if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
+	    	$param_str = '<param name="wmode" value="' . $wmode .'"></param>';
+	      	$embed_str = ' wmode="' . $wmode .'" ';
+	      	
+	      	// Determine whether we are dealing with iframe or embed and handle accordingly
+	      	if (strpos($video_info->html, "<iframe") === false) {
+		        $param_pos = strpos( $video_info->html, "<embed" );
+		        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
+	        	$param_pos = strpos( $video_info->html, "<embed" ) + 6;
+	    	    $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
+	    	}
+	    	else
+	    	{
+	    		$video_info->html = preg_replace('/<iframe(.*?)src="(.*?)"(.*?)<\/iframe>/i', '<iframe$1src="$2&wmode=' . $wmode . '"$3</iframe>', $video_info->html);
+	    	}
+    	}
 
-		//Handle a single tag
+		// Handle a single tag
 		if ($mode == "single") 
 		{
 			$this->return_data = $video_info->html;
 			return;
 		}
 
-		//Handle multiple tag with tagdata
+		// Handle multiple tag with tagdata
 		foreach ($plugin_vars as $key => $var) 
 		{
 			if (isset($video_info->$key)) 
@@ -205,7 +207,7 @@ class Antenna {
 			$video_info = curl_exec($curl);
 			$video_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-			//Close the request
+			// Close the request
 			curl_close($curl);
 
 		}

@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.10',
+	'pi_version'		=> '1.11',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -38,7 +38,7 @@ class Antenna
 
 		$tagdata = $this->EE->TMPL->tagdata;
 
-		//Check to see if it's a one-off tag or a pair
+		// Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
 		
 		$plugin_vars = array(
@@ -55,7 +55,7 @@ class Antenna
 			$video_data[$var] = false;
 		}
 
-		//Deal with the parameters
+		// Deal with the parameters
 		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
 		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
 		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
@@ -94,7 +94,7 @@ class Antenna
 		}
 
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $viddler_type . $viddler_ratio;
+		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $viddler_type . $viddler_ratio;
 		
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
@@ -121,34 +121,36 @@ class Antenna
 			$video_info = $cached_url;
 		}
 
-		//Decode the cURL data
+		// Decode the cURL data
 		$video_info = simplexml_load_string($video_info);
     
    	    
-    //inject wmode transparent if required
-    if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
-	      $param_str = '<param name="wmode" value="' . $wmode .'"></param>';
-	      $embed_str = ' wmode="' . $wmode .'" ';
-	      //is response an iframe or object+embed? - iframes should get wmode passed thru oembed api, otherwise can normally be fixed with z-index in css
-	      if ((strpos( $video_info->html, "<iframe" )) === false) {
-	        //object param
-	        $param_pos = strpos( $video_info->html, "<embed" );
-	        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
-	        //now for the embed element attr
-        	$param_pos = strpos( $video_info->html, "<embed" ) + 6;
-    	    $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
-	      }
+    	// Inject wmode transparent if required
+    	if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
+	    	$param_str = '<param name="wmode" value="' . $wmode .'"></param>';
+	      	$embed_str = ' wmode="' . $wmode .'" ';
+	      	
+	      	// Determine whether we are dealing with iframe or embed and handle accordingly
+	      	if (strpos($video_info->html, "<iframe") === false) {
+		        $param_pos = strpos( $video_info->html, "<embed" );
+		        $video_info->html = substr($video_info->html, 0, $param_pos) . $param_str . substr($video_info->html, $param_pos);
+	        	$param_pos = strpos( $video_info->html, "<embed" ) + 6;
+	    	    $video_info->html =  substr($video_info->html, 0, $param_pos) . $embed_str . substr($video_info->html, $param_pos);
+	    	}
+	    	else
+	    	{
+	    		$video_info->html = preg_replace('/<iframe(.*?)src="(.*?)"(.*?)<\/iframe>/i', '<iframe$1src="$2&wmode=' . $wmode . '"$3</iframe>', $video_info->html);
+	    	}
     	}
     
-    
-		//Handle a single tag
+		// Handle a single tag
 		if ($mode == "single") 
 		{
 			$this->return_data = $video_info->html;
 			return;
 		}
 
-		//Handle multiple tag with tagdata
+		// Handle multiple tag with tagdata
 		foreach ($plugin_vars as $key => $var) 
 		{
 			if (isset($video_info->$key)) 
