@@ -79,7 +79,7 @@ class Antenna
 		$viddler_ratio = ($this->EE->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $this->EE->TMPL->fetch_param('viddler_ratio') : "";
 
 		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
-		if (strpos($video_url, "youtube.com/") !== FALSE) {
+		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
 			$url = "http://www.youtube.com/oembed?format=xml&iframe=1&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = "http://vimeo.com/api/oembed.xml?url=";
