@@ -34,6 +34,10 @@ The optional wmode parameter can be used if you're experiencing issues positioni
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
+If you're using YouTube, you get access to one more parameter:
+
+- youtube_rel='0/1' -- Show related videos at end of video. Defaults to 1.
+
 If you're using Vimeo, you get access to three more parameters:
 
 - vimeo_byline='true/false' -- Shows the byline on the video. Defaults to true.

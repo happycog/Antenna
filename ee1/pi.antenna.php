@@ -80,6 +80,9 @@ class Antenna {
 			$this->refresh_cache = $TMPL->fetch_param('cache_minutes');
 		}
 
+		// Some optional YouTube parameters
+		$youtube_rel = $TMPL->fetch_param('youtube_rel', null);
+
 		// Some optional Vimeo parameters
 		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
 		$vimeo_title = ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
@@ -153,6 +156,13 @@ class Antenna {
 	    		$video_info->html = preg_replace('/<iframe(.*?)src="(.*?)"(.*?)<\/iframe>/i', '<iframe$1src="$2&wmode=' . $wmode . '"$3</iframe>', $video_info->html);
 	    	}
     	}
+
+    	// Inject YouTube rel value if required
+    	if (!is_null($youtube_rel))
+		{
+			preg_match('/.*?src="(.*?)".*?/', $video_info->html, $matches);
+			if (!empty($matches[1])) $video_info->html = str_replace($matches[1], $matches[1] . '&rel=' . $youtube_rel, $video_info->html);
+		}
 
 		// Handle a single tag
 		if ($mode == "single") 
