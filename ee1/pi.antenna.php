@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.13',
+	'pi_version'		=> '1.14',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
@@ -248,7 +248,7 @@ class Antenna {
 	{	
 		// Check for cache directory
 		
-		$dir = PATH_CACHE . 'cache/' . $this->cache_name . '/';
+		$dir = PATH_CACHE . $this->cache_name . '/';
 		
 		if ( ! @is_dir($dir))
 		{
@@ -300,7 +300,7 @@ class Antenna {
 	{
 		// Check for cache directory
 		
-		$dir = PATH_CACHE . 'cache/' . $this->cache_name . '/';
+		$dir = PATH_CACHE . $this->cache_name . '/';
 
 		if ( ! @is_dir($dir))
 		{
