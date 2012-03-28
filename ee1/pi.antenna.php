@@ -311,12 +311,12 @@ class Antenna {
 
 		if ( ! @is_dir($dir))
 		{
-			if ( ! @mkdir($dir, 0777))
+			if ( ! @mkdir($dir, DIR_WRITE_MODE))
 			{
 				return FALSE;
 			}
 			
-			@chmod($dir, 0777);            
+			@chmod($dir, DIR_WRITE_MODE);            
 		}
 		
 		// add a timestamp to the top of the file
@@ -337,7 +337,7 @@ class Antenna {
 		flock($fp, LOCK_UN);
 		fclose($fp);
         
-		@chmod($file, 0777);
+		@chmod($file, DIR_WRITE_MODE);
 	}
 	
 	/**
