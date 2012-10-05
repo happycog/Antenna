@@ -76,7 +76,7 @@ class Antenna {
 		$wmode_param = ($TMPL->fetch_param('wmode')) ? "&wmode=" . $TMPL->fetch_param('wmode') : "";
 
 		// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-		if (empty($max_height)) $max_height = "&maxheight=" . $this->EE->TMPL->fetch_param('max_width');
+		if (empty($max_height)) $max_height = "&maxheight=" . $TMPL->fetch_param('max_width');
 
 		// cache can be disabled by setting 0 as the cache_minutes param
 		if ($TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($TMPL->fetch_param('cache_minutes'))) {
@@ -84,7 +84,7 @@ class Antenna {
 		}
 
 		// Some optional YouTube parameters
-		$youtube_rel = $TMPL->fetch_param('youtube_rel', null);
+		$youtube_rel = $TMPL->fetch_param('youtube_rel') !== FALSE ? $TMPL->fetch_param('youtube_rel') : null;
 
 		// Some optional Vimeo parameters
 		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
