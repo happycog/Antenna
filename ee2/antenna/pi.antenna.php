@@ -46,7 +46,8 @@ class Antenna
 			"html"          =>  "embed_code",
 			"author_name"   =>  "video_author",
 			"author_url"    =>  "video_author_url",
-			"thumbnail_url" =>  "video_thumbnail"
+			"thumbnail_url" =>  "video_thumbnail",
+			"description"   =>  "video_description"
 		);
 		
 		$video_data = array();
