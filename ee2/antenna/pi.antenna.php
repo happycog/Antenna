@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.17',
+	'pi_version'		=> '1.2',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -348,6 +348,9 @@ You can also output various pieces of metadata about the YouTube video.
     {video_author}
     {video_author_url}
     {video_thumbnail}
+
+    {!-- For Vimeo Only --}
+    {video_description}
 	
 	{if embed_code}
 		It worked! {embed_code}

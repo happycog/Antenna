@@ -19,6 +19,9 @@ Usage
 	    {video_author_url}
 	    {video_thumbnail}
 
+	    {!-- For Vimeo Only --}
+	    {video_description}
+
 	    {if embed_code}
 	        It worked! {embed_code}
 	    {if:else}
@@ -38,11 +41,12 @@ If you're using YouTube, you get access to one more parameter:
 
 - youtube_rel='0/1' -- Show related videos at end of video. Defaults to 1.
 
-If you're using Vimeo, you get access to three more parameters:
+If you're using Vimeo, you get access to three more parameters and one more variable:
 
 - vimeo_byline='true/false' -- Shows the byline on the video. Defaults to true.
 - vimeo_title='true/false' -- Shows the title on the video. Defaults to true.
 - vimeo_autoplay='true/false' -- Automatically start playback of the video. Defaults to false.
+- {video_description} -- The description of the video, as set in Vimeo
 
 If you're using Viddler, you get access to two more parameters:
 
@@ -54,7 +58,7 @@ If you're using Viddler, you get access to two more parameters:
 Compatibility
 -------
 
-**Antenna** is compatible with ExpressionEngine 1 & 2. The version for ExpressionEngine 1 has been tested on 1.6.9 but will likely work with older versions. The version for ExpressionEngine 2 has been tested on 2.1.
+**Antenna** is compatible with ExpressionEngine 1 & 2. The version for ExpressionEngine 1 has been tested on 1.6.9 but will likely work with older versions. The version for ExpressionEngine 2 has been tested on 2.1+.
 
 You must be using PHP 5.2+, though I haven't tested with PHP 5.3, and you must have either the cURL library installed or allow_url_fopen enabled.
 
