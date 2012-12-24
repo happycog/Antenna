@@ -27,21 +27,21 @@ class Antenna {
 	public $cache_name = 'antenna_urls';
 	public $refresh_cache = 10080;			// in mintues (default is 1 week)
 	public $cache_expired = FALSE;
-	
+
 	/**
 	 * PHP4/EE compatibility
 	 *
 	 * @return void
 	 */
-	public function Antenna() 
+	public function Antenna()
 	{
 		$this->__construct();
 	}
-	
+
 	/**
 	 * Takes a YouTube or Vimeo url and parameters
-	 * does a cURL request and returns the 
-	 * the embed code and metadata to EE 
+	 * does a cURL request and returns the
+	 * the embed code and metadata to EE
 	 *
 	 * @return void
 	 */
@@ -53,7 +53,7 @@ class Antenna {
 
 		// Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
-		
+
 		$plugin_vars = array(
 			"title"         =>  "video_title",
 			"html"          =>  "embed_code",
@@ -62,7 +62,7 @@ class Antenna {
 			"thumbnail_url" =>  "video_thumbnail",
 			"description"   =>  "video_description"
 		);
-		
+
 		$video_data = array();
 
 		foreach ($plugin_vars as $var) {
@@ -88,10 +88,11 @@ class Antenna {
 		$youtube_rel = $TMPL->fetch_param('youtube_rel') !== FALSE ? $TMPL->fetch_param('youtube_rel') : null;
 
 		// Some optional Vimeo parameters
-		$vimeo_byline = ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
-		$vimeo_title = ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
-		$vimeo_autoplay = ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
-		$vimeo_portrait = ($TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
+		$vimeo_byline	= ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
+		$vimeo_title	= ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
+		$vimeo_autoplay	= ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
+		$vimeo_portrait	= ($TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
+		$vimeo_api		= ($TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
 
 		// Some optional Viddler parameters
 		$viddler_type = ($TMPL->fetch_param('viddler_type')) ? "&type=" . $TMPL->fetch_param('viddler_type') : "";
@@ -105,30 +106,30 @@ class Antenna {
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
 			$url = "http://app.wistia.com/embed/oembed.xml?url=";
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
-			$url = "http://lab.viddler.com/services/oembed/?format=xml&url=";		
+			$url = "http://lab.viddler.com/services/oembed/?format=xml&url=";
 		} else {
 			$tagdata = $FNS->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $viddler_type . $viddler_ratio;
+		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $vimeo_api . $viddler_type . $viddler_ratio;
 
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
-		
+
 		if (! $this->refresh_cache OR $this->cache_expired OR ! $cached_url)
 		{
 			// Create the info and header variables
 			list($video_info, $video_header) = $this->curl($url);
 
-			if (!$video_info || $video_header != "200") 
+			if (!$video_info || $video_header != "200")
 			{
 				$tagdata = $FNS->var_swap($tagdata, $video_data);
 				$this->return_data = $tagdata;
 				return;
 			}
-			
+
 			// write the data to cache if caching hasn't been disabled
 			if ($this->refresh_cache) {
 				$this->_write_cache($video_info, $url);
@@ -144,10 +145,10 @@ class Antenna {
 		$video_info = simplexml_load_string($video_info);
 
 		// Inject wmode transparent if required
-    	if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {  
+    	if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {
 	    	$param_str = '<param name="wmode" value="' . $wmode .'"></param>';
 	      	$embed_str = ' wmode="' . $wmode .'" ';
-	      	
+
 	      	// Determine whether we are dealing with iframe or embed and handle accordingly
 	      	if (strpos($video_info->html, "<iframe") === false) {
 		        $param_pos = strpos( $video_info->html, "<embed" );
@@ -173,16 +174,16 @@ class Antenna {
 		}
 
 		// Handle a single tag
-		if ($mode == "single") 
+		if ($mode == "single")
 		{
 			$this->return_data = $video_info->html;
 			return;
 		}
 
 		// Handle multiple tag with tagdata
-		foreach ($plugin_vars as $key => $var) 
+		foreach ($plugin_vars as $key => $var)
 		{
-			if (isset($video_info->$key)) 
+			if (isset($video_info->$key))
 			{
 				$video_data[$var] = $video_info->$key;
 			}
@@ -190,7 +191,7 @@ class Antenna {
 
 		$tagdata = $FNS->prep_conditionals($tagdata, $video_data);
 
-		foreach ($video_data as $key => $value) 
+		foreach ($video_data as $key => $value)
 		{
 			$tagdata = $TMPL->swap_var_single($key, $value, $tagdata);
 		}
@@ -199,10 +200,10 @@ class Antenna {
 
 		return;
 	}
-	
+
 	/**
 	 * Generates a CURL request to the YouTube URL
-	 * to make sure that 
+	 * to make sure that
 	 *
 	 * @param string $vid_url The YouTube URL
 	 * @return void
@@ -215,10 +216,10 @@ class Antenna {
 
 			// Our cURL options
 			$options = array(
-				CURLOPT_URL =>  $vid_url, 
+				CURLOPT_URL =>  $vid_url,
 				CURLOPT_RETURNTRANSFER => 1,
 				CURLOPT_CONNECTTIMEOUT => 10,
-			); 
+			);
 
 			curl_setopt_array($curl, $options);
 
@@ -241,7 +242,7 @@ class Antenna {
 
 		return array($video_info, $video_header);
 	}
-	
+
 	/**
 	 * Check Cache
 	 *
@@ -253,48 +254,48 @@ class Antenna {
 	 * @return	mixed - string if pulling from cache, FALSE if not
 	 */
 	function _check_cache($url)
-	{	
+	{
 		// Check for cache directory
-		
+
 		$dir = PATH_CACHE . $this->cache_name . '/';
-		
+
 		if ( ! @is_dir($dir))
 		{
 			return FALSE;
 		}
-		
+
 		// Check for cache file
-		
+
         $file = $dir.md5($url);
-		
+
 		if ( ! file_exists($file) OR ! ($fp = @fopen($file, 'rb')))
 		{
 			return FALSE;
 		}
-		       
+
 		flock($fp, LOCK_SH);
-                    
+
 		$cache = @fread($fp, filesize($file));
-                    
+
 		flock($fp, LOCK_UN);
-        
+
 		fclose($fp);
 
         // Grab the timestamp from the first line
 
 		$eol = strpos($cache, "\n");
-		
+
 		$timestamp = substr($cache, 0, $eol);
 		$cache = trim((substr($cache, $eol)));
-		
+
 		if ( time() > ($timestamp + ($this->refresh_cache * 60)) )
 		{
 			$this->cache_expired = TRUE;
 		}
-		
+
         return $cache;
 	}
-	
+
 	/**
 	 * Write Cache
 	 *
@@ -307,7 +308,7 @@ class Antenna {
 	function _write_cache($data, $url)
 	{
 		// Check for cache directory
-		
+
 		$dir = PATH_CACHE . $this->cache_name . '/';
 
 		if ( ! @is_dir($dir))
@@ -316,18 +317,18 @@ class Antenna {
 			{
 				return FALSE;
 			}
-			
-			@chmod($dir, DIR_WRITE_MODE);            
+
+			@chmod($dir, DIR_WRITE_MODE);
 		}
-		
+
 		// add a timestamp to the top of the file
 		$data = time()."\n".$data;
-		
-		
+
+
 		// Write the cached data
-		
+
 		$file = $dir.md5($url);
-	
+
 		if ( ! $fp = @fopen($file, 'wb'))
 		{
 			return FALSE;
@@ -337,17 +338,17 @@ class Antenna {
 		fwrite($fp, $data);
 		flock($fp, LOCK_UN);
 		fclose($fp);
-        
+
 		@chmod($file, DIR_WRITE_MODE);
 	}
-	
+
 	/**
 	 * ExpressionEngine plugins require this for displaying
 	 * usage in the control panel
 	 *
 	 * @return void
 	 */
-    public function usage() 
+    public function usage()
 	{
 		ob_start();
 ?>
@@ -364,13 +365,13 @@ You can also output various pieces of metadata about the YouTube video.
 
     {!-- For Vimeo Only --}
     {video_description}
-	
+
 	{if embed_code}
 		It worked! {embed_code}
 	{if:else}
 		No video to display here.
 	{/if}
-	
+
 {/exp:antenna}
 
 Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
@@ -386,9 +387,9 @@ Note for Wistia users: Wistia doesn’t return as much data as the other provide
 
 <?php
 		$buffer = ob_get_contents();
-		
-		ob_end_clean(); 
-	
+
+		ob_end_clean();
+
 		return $buffer;
 	}
 }
