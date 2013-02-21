@@ -37,6 +37,10 @@ The optional wmode parameter can be used if you're experiencing issues positioni
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
 
+Antenna will automatically enforce HTTPS if the provided video URL has a protocol of https:// and is supported by the video service. Alternatively, you can also attempt to force the particular service to return the HTTPS resource by adding the parameter:
+
+- force_https='true'
+
 If you're using YouTube, you get access to one more parameter:
 
 - youtube_rel='0/1' -- Show related videos at end of video. Defaults to 1.

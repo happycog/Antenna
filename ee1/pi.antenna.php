@@ -7,7 +7,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.21',
+	'pi_version'		=> '1.22',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
@@ -98,11 +98,17 @@ class Antenna {
 		$viddler_type = ($TMPL->fetch_param('viddler_type')) ? "&type=" . $TMPL->fetch_param('viddler_type') : "";
 		$viddler_ratio = ($TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $TMPL->fetch_param('viddler_ratio') : "";
 
+		// Automatically handle scheme if https
+		$is_https = false;
+		if ($this->EE->TMPL->fetch_param('force_https') == "true" || parse_url($video_url, PHP_URL_SCHEME) == 'https') {
+			$is_https = true;
+		}
+
 		// If it's not YouTube, Vimeo, or Wistia, bail
 		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
-			$url = "http://www.youtube.com/oembed?format=xml&iframe=1&url=";
+			$url = "http://www.youtube.com/oembed?format=xml&iframe=1" . ($is_https ? '&scheme=https' : '') . "&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
-			$url = "http://vimeo.com/api/oembed.xml?url=";
+			$url = "http" . ($is_https ? 's' : '') . "://vimeo.com/api/oembed.xml?url=";
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
 			$url = "http://app.wistia.com/embed/oembed.xml?url=";
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
