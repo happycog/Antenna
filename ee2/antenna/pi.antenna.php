@@ -169,18 +169,29 @@ class Antenna
 		}
 		
 
-	// insert highres images
-	if(strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) 
-		{
+	// actually setting thumbnails at a reasonably consistent size, as well as getting higher-res images
+	if(strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
 		$video_info->highres_url = str_replace('hqdefault','maxresdefault',$video_info->thumbnail_url);
-		$video_info->medres_url = str_replace('hqdefault','maxresdefault',$video_info->thumbnail_url);
+		$video_info->medres_url = $video_info->thumbnail_url;
+		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
 		}
-	else if (strpos($video_url, "vimeo.com/") !== FALSE) 
-		{
+	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 		$video_info->highres_url = str_replace('_295','_1280',$video_info->thumbnail_url);
 		$video_info->medres_url = str_replace('_295','_640',$video_info->thumbnail_url);
+		}
+	else if (strpos($video_url, "wistia.com/") !== FALSE)
+		{
+		$video_info->highres_url = str_replace('?image_crop_resized=100x60','',$video_info->thumbnail_url);
+		$video_info->medres_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=640x400',$video_info->thumbnail_url);
+		$video_info->thumbnail_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=240x135',$video_info->thumbnail_url);
+		}
+	else if (strpos($video_url, "viddler.com/") !== FALSE)
+		{
+		$video_info->highres_url = $video_info->thumbnail_url;
+		$video_info->medres_url = $video_info->thumbnail_url;
+		$video_info->thumbnail_url = str_replace('thumbnail_2','thumbnail_1',$video_info->thumbnail_url);
 		}		
-		
+	
 
 		// Handle a single tag
 		if ($mode == "single")
