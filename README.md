@@ -18,6 +18,8 @@ Usage
 	    {video_author}
 	    {video_author_url}
 	    {video_thumbnail}
+	    {video_mediumres}
+	    {video_highres}
 
 	    {!-- For Vimeo Only --}
 	    {video_description}
@@ -36,6 +38,8 @@ Set the max\_width and/or max\_height for whatever size your website requires. T
 The optional wmode parameter can be used if you're experiencing issues positioning HTML content in front of the embedded media. It accepts values of transparent, opaque and window.
 
 If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
+
+There are three image sizes available for videos: {video_thumbnail}, {video_mediumres}, and {video_highres}. They are not consistent across services but they should fall into rough size brackets. {video_thumbnail} is going to be between 100-200px wide; {video_mediumres} will be around 400-500px wide; and {video_highres} will be at least the full size of your uploaded video and could be as wide as 1280px.
 
 Antenna will automatically enforce HTTPS if the provided video URL has a protocol of https:// and is supported by the video service. Alternatively, you can also attempt to force the particular service to return the HTTPS resource by adding the parameter:
 
