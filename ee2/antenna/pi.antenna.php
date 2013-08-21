@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.22',
+	'pi_version'		=> '1.23',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -167,7 +167,7 @@ class Antenna
 			preg_match('/.*?src="(.*?)".*?/', $video_info->html, $matches);
 			if (!empty($matches[1])) $video_info->html = str_replace($matches[1], $matches[1] . '&rel=' . $youtube_rel, $video_info->html);
 		}
-		
+
 
 	// actually setting thumbnails at a reasonably consistent size, as well as getting higher-res images
 	if(strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
@@ -190,8 +190,8 @@ class Antenna
 		$video_info->highres_url = $video_info->thumbnail_url;
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('thumbnail_2','thumbnail_1',$video_info->thumbnail_url);
-		}		
-	
+		}
+
 
 		// Handle a single tag
 		if ($mode == "single")
