@@ -5,9 +5,9 @@ Antenna for ExpressionEngine 1 & 2
 
 You can also output various pieces of metadata about the video.
 
-For ExpressionEngine 1 installation, pi.antenna.php should be added to /system/plugins/
+Support for Expression Engine 1 ended with v1.23. That version can still be downloaded here: https://github.com/vector/Antenna/releases/tag/v1.23
 
-For ExpressionEngine 2 installation, the directory /antenna should be placed in /system/expressionengine/third_party/
+For ExpressionEngine 2 installation, the directory /third_party/antenna should be placed in /system/expressionengine/third_party/
 
 Usage
 -------

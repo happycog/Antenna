@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /**
  * Antenna Plugin
  * Copyright Matt Weinberg, www.VectorMediaGroup.com
@@ -7,10 +9,10 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.23',
+	'pi_version'		=> '1.24',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
-	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, and Wistia Videos',
+	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
 	'pi_usage'			=> Antenna::usage()
 );
 
@@ -22,34 +24,19 @@ $plugin_info = array(
  *
  * @package Antenna
  */
-class Antenna {
+
+class Antenna
+{
 	public $return_data = '';
 	public $cache_name = 'antenna_urls';
 	public $refresh_cache = 10080;			// in mintues (default is 1 week)
 	public $cache_expired = FALSE;
 
-	/**
-	 * PHP4/EE compatibility
-	 *
-	 * @return void
-	 */
 	public function Antenna()
 	{
-		$this->__construct();
-	}
+		$this->EE =& get_instance();
 
-	/**
-	 * Takes a YouTube or Vimeo url and parameters
-	 * does a cURL request and returns the
-	 * the embed code and metadata to EE
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		global $TMPL, $FNS;
-
-		$tagdata = $TMPL->tagdata;
+		$tagdata = $this->EE->TMPL->tagdata;
 
 		// Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
@@ -60,6 +47,8 @@ class Antenna {
 			"author_name"   =>  "video_author",
 			"author_url"    =>  "video_author_url",
 			"thumbnail_url" =>  "video_thumbnail",
+			"medres_url"	=>  "video_mediumres",
+			"highres_url"	=>  "video_highres",
 			"description"   =>  "video_description"
 		);
 
@@ -70,33 +59,33 @@ class Antenna {
 		}
 
 		// Deal with the parameters
-		$video_url = ($TMPL->fetch_param('url')) ?  html_entity_decode($TMPL->fetch_param('url')) : false;
-		$max_width = ($TMPL->fetch_param('max_width')) ? "&maxwidth=" . $TMPL->fetch_param('max_width') : "";
-		$max_height = ($TMPL->fetch_param('max_height')) ? "&maxheight=" . $TMPL->fetch_param('max_height') : "";
-		$wmode = ($TMPL->fetch_param('wmode')) ? $TMPL->fetch_param('wmode') : "";
-		$wmode_param = ($TMPL->fetch_param('wmode')) ? "&wmode=" . $TMPL->fetch_param('wmode') : "";
+		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
+		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
+		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
+		$wmode = ($this->EE->TMPL->fetch_param('wmode')) ? $this->EE->TMPL->fetch_param('wmode') : "";
+		$wmode_param = ($this->EE->TMPL->fetch_param('wmode')) ? "&wmode=" . $this->EE->TMPL->fetch_param('wmode') : "";
 
 		// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-		if (empty($max_height)) $max_height = "&maxheight=" . $TMPL->fetch_param('max_width');
+		if (empty($max_height)) $max_height = "&maxheight=" . $this->EE->TMPL->fetch_param('max_width');
 
-		// cache can be disabled by setting 0 as the cache_minutes param
-		if ($TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($TMPL->fetch_param('cache_minutes'))) {
-			$this->refresh_cache = $TMPL->fetch_param('cache_minutes');
+		// Cache can be disabled by setting 0 as the cache_minutes param
+		if ($this->EE->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($this->EE->TMPL->fetch_param('cache_minutes'))) {
+			$this->refresh_cache = $this->EE->TMPL->fetch_param('cache_minutes');
 		}
 
 		// Some optional YouTube parameters
-		$youtube_rel = $TMPL->fetch_param('youtube_rel') !== FALSE ? $TMPL->fetch_param('youtube_rel') : null;
+		$youtube_rel = $this->EE->TMPL->fetch_param('youtube_rel', null);
 
 		// Some optional Vimeo parameters
-		$vimeo_byline	= ($TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
-		$vimeo_title	= ($TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
-		$vimeo_autoplay	= ($TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
-		$vimeo_portrait	= ($TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
-		$vimeo_api		= ($TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
+		$vimeo_byline	= ($this->EE->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
+		$vimeo_title	= ($this->EE->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
+		$vimeo_autoplay	= ($this->EE->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
+		$vimeo_portrait	= ($this->EE->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
+		$vimeo_api		= ($this->EE->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
 
 		// Some optional Viddler parameters
-		$viddler_type = ($TMPL->fetch_param('viddler_type')) ? "&type=" . $TMPL->fetch_param('viddler_type') : "";
-		$viddler_ratio = ($TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $TMPL->fetch_param('viddler_ratio') : "";
+		$viddler_type = ($this->EE->TMPL->fetch_param('viddler_type')) ? "&type=" . $this->EE->TMPL->fetch_param('viddler_type') : "";
+		$viddler_ratio = ($this->EE->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $this->EE->TMPL->fetch_param('viddler_ratio') : "";
 
 		// Automatically handle scheme if https
 		$is_https = false;
@@ -104,7 +93,7 @@ class Antenna {
 			$is_https = true;
 		}
 
-		// If it's not YouTube, Vimeo, or Wistia, bail
+		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
 		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
 			$url = "http://www.youtube.com/oembed?format=xml&iframe=1" . ($is_https ? '&scheme=https' : '') . "&url=";
 		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
@@ -114,10 +103,11 @@ class Antenna {
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
 			$url = "http://lab.viddler.com/services/oembed/?format=xml&url=";
 		} else {
-			$tagdata = $FNS->var_swap($tagdata, $video_data);
+			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
+
 
 		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $vimeo_api . $viddler_type . $viddler_ratio;
 
@@ -126,12 +116,12 @@ class Antenna {
 
 		if (! $this->refresh_cache OR $this->cache_expired OR ! $cached_url)
 		{
-			// Create the info and header variables
+			//Create the info and header variables
 			list($video_info, $video_header) = $this->curl($url);
 
 			if (!$video_info || $video_header != "200")
 			{
-				$tagdata = $FNS->var_swap($tagdata, $video_data);
+				$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 				$this->return_data = $tagdata;
 				return;
 			}
@@ -140,7 +130,6 @@ class Antenna {
 			if ($this->refresh_cache) {
 				$this->_write_cache($video_info, $url);
 			}
-
 		}
 		else
 		{
@@ -150,7 +139,7 @@ class Antenna {
 		// Decode the cURL data
 		$video_info = simplexml_load_string($video_info);
 
-		// Inject wmode transparent if required
+    	// Inject wmode transparent if required
     	if ($wmode === 'transparent' || $wmode === 'opaque' || $wmode === 'window' ) {
 	    	$param_str = '<param name="wmode" value="' . $wmode .'"></param>';
 	      	$embed_str = ' wmode="' . $wmode .'" ';
@@ -179,6 +168,31 @@ class Antenna {
 			if (!empty($matches[1])) $video_info->html = str_replace($matches[1], $matches[1] . '&rel=' . $youtube_rel, $video_info->html);
 		}
 
+
+	// actually setting thumbnails at a reasonably consistent size, as well as getting higher-res images
+	if(strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
+		$video_info->highres_url = str_replace('hqdefault','maxresdefault',$video_info->thumbnail_url);
+		$video_info->medres_url = $video_info->thumbnail_url;
+		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
+		}
+	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
+		$video_info->highres_url = str_replace('_295','_1280',$video_info->thumbnail_url);
+		$video_info->medres_url = str_replace('_295','_640',$video_info->thumbnail_url);
+		}
+	else if (strpos($video_url, "wistia.com/") !== FALSE)
+		{
+		$video_info->highres_url = str_replace('?image_crop_resized=100x60','',$video_info->thumbnail_url);
+		$video_info->medres_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=640x400',$video_info->thumbnail_url);
+		$video_info->thumbnail_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=240x135',$video_info->thumbnail_url);
+		}
+	else if (strpos($video_url, "viddler.com/") !== FALSE)
+		{
+		$video_info->highres_url = $video_info->thumbnail_url;
+		$video_info->medres_url = $video_info->thumbnail_url;
+		$video_info->thumbnail_url = str_replace('thumbnail_2','thumbnail_1',$video_info->thumbnail_url);
+		}
+
+
 		// Handle a single tag
 		if ($mode == "single")
 		{
@@ -195,11 +209,11 @@ class Antenna {
 			}
 		}
 
-		$tagdata = $FNS->prep_conditionals($tagdata, $video_data);
+		$tagdata = $this->EE->functions->prep_conditionals($tagdata, $video_data);
 
 		foreach ($video_data as $key => $value)
 		{
-			$tagdata = $TMPL->swap_var_single($key, $value, $tagdata);
+			$tagdata = $this->EE->TMPL->swap_var_single($key, $value, $tagdata);
 		}
 
 		$this->return_data = $tagdata;
@@ -232,7 +246,7 @@ class Antenna {
 			$video_info = curl_exec($curl);
 			$video_header = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-			// Close the request
+			//Close the request
 			curl_close($curl);
 
 		}
@@ -263,7 +277,7 @@ class Antenna {
 	{
 		// Check for cache directory
 
-		$dir = PATH_CACHE . $this->cache_name . '/';
+		$dir = APPPATH . 'cache/' . $this->cache_name . '/';
 
 		if ( ! @is_dir($dir))
 		{
@@ -315,7 +329,7 @@ class Antenna {
 	{
 		// Check for cache directory
 
-		$dir = PATH_CACHE . $this->cache_name . '/';
+		$dir = APPPATH . 'cache/' . $this->cache_name . '/';
 
 		if ( ! @is_dir($dir))
 		{
@@ -351,8 +365,8 @@ class Antenna {
 	/**
 	 * ExpressionEngine plugins require this for displaying
 	 * usage in the control panel
-	 *
-	 * @return void
+	 * @access public
+	 * @return string
 	 */
     public function usage()
 	{
@@ -390,7 +404,6 @@ The cache defaults to 1 week. It can be completely disabled by setting cache_min
 
 Note for Wistia users: Wistia doesn’t return as much data as the other providers, so not all of the above variables will work. Also, you may need to contact Wistia and ask them to enable "oEmbed support" on your account for this to work.
 
-
 <?php
 		$buffer = ob_get_contents();
 
@@ -398,5 +411,5 @@ Note for Wistia users: Wistia doesn’t return as much data as the other provide
 
 		return $buffer;
 	}
+	// END
 }
-?>
