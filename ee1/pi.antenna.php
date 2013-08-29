@@ -100,7 +100,7 @@ class Antenna {
 
 		// Automatically handle scheme if https
 		$is_https = false;
-		if ($this->EE->TMPL->fetch_param('force_https') == "true" || parse_url($video_url, PHP_URL_SCHEME) == 'https') {
+		if ($TMPL->fetch_param('force_https') == "true" || parse_url($video_url, PHP_URL_SCHEME) == 'https') {
 			$is_https = true;
 		}
 
