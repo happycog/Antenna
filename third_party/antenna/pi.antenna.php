@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.24',
+	'pi_version'		=> '1.25',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -101,7 +101,7 @@ class Antenna
 		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
 			$url = "http://app.wistia.com/embed/oembed.xml?url=";
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
-			$url = "http://lab.viddler.com/services/oembed/?format=xml&url=";
+			$url = "http://www.viddler.com/oembed/?format=xml&url=";
 		} else {
 			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
