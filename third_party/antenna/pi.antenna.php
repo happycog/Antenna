@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.25',
+	'pi_version'		=> '1.26',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -176,8 +176,9 @@ class Antenna
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
-		$video_info->highres_url = str_replace('_295','_1280',$video_info->thumbnail_url);
-		$video_info->medres_url = str_replace('_295','_640',$video_info->thumbnail_url);
+		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280',$video_info->thumbnail_url);
+		$video_info->medres_url = preg_replace('/_(.*?)\./','_640',$video_info->thumbnail_url);
+		$video_info->thumbnail_url = preg_replace('/_(.*?)\./','_295.',$video_info->thumbnail_url);
 		}
 	else if (strpos($video_url, "wistia.com/") !== FALSE)
 		{
