@@ -176,8 +176,8 @@ class Antenna
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
-		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280',$video_info->thumbnail_url);
-		$video_info->medres_url = preg_replace('/_(.*?)\./','_640',$video_info->thumbnail_url);
+		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280.',$video_info->thumbnail_url);
+		$video_info->medres_url = preg_replace('/_(.*?)\./','_640.',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = preg_replace('/_(.*?)\./','_295.',$video_info->thumbnail_url);
 		}
 	else if (strpos($video_url, "wistia.com/") !== FALSE)
