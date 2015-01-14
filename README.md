@@ -20,6 +20,7 @@ Usage
 	    {video_thumbnail}
 	    {video_mediumres}
 	    {video_highres}
+	    {video_provider}
 
 	    {!-- For Vimeo Only --}
 	    {video_description}

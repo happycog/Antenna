@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.27',
+	'pi_version'		=> '1.3',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -175,27 +175,27 @@ class Antenna
 		$video_info->highres_url = str_replace('hqdefault','maxresdefault',$video_info->thumbnail_url);
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
-		$video_info->video_provider = "youtube";
+		$video_info->provider = "youtube";
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280.',$video_info->thumbnail_url);
 		$video_info->medres_url = preg_replace('/_(.*?)\./','_640.',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = preg_replace('/_(.*?)\./','_295.',$video_info->thumbnail_url);
-		$video_info->video_provider = "vimeo";
+		$video_info->provider = "vimeo";
 		}
 	else if (strpos($video_url, "wistia.com/") !== FALSE)
 		{
 		$video_info->highres_url = str_replace('?image_crop_resized=100x60','',$video_info->thumbnail_url);
 		$video_info->medres_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=640x400',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=240x135',$video_info->thumbnail_url);
-		$video_info->video_provider = "wistia";
+		$video_info->provider = "wistia";
 		}
 	else if (strpos($video_url, "viddler.com/") !== FALSE)
 		{
 		$video_info->highres_url = $video_info->thumbnail_url;
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('thumbnail_2','thumbnail_1',$video_info->thumbnail_url);
-		$video_info->video_provider = "viddler";
+		$video_info->provider = "viddler";
 		}
 
 
@@ -388,6 +388,9 @@ You can also output various pieces of metadata about the YouTube video.
     {video_author}
     {video_author_url}
     {video_thumbnail}
+    {video_mediumres}
+    {video_highres}
+    {video_provider}
 
     {!-- For Vimeo Only --}
     {video_description}
