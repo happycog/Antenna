@@ -49,7 +49,8 @@ class Antenna
 			"thumbnail_url" =>  "video_thumbnail",
 			"medres_url"	=>  "video_mediumres",
 			"highres_url"	=>  "video_highres",
-			"description"   =>  "video_description"
+			"description"   =>  "video_description",
+			"provider"      =>  "video_provider"
 		);
 
 		$video_data = array();
@@ -174,23 +175,27 @@ class Antenna
 		$video_info->highres_url = str_replace('hqdefault','maxresdefault',$video_info->thumbnail_url);
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
+		$video_info->video_provider = "youtube";
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280.',$video_info->thumbnail_url);
 		$video_info->medres_url = preg_replace('/_(.*?)\./','_640.',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = preg_replace('/_(.*?)\./','_295.',$video_info->thumbnail_url);
+		$video_info->video_provider = "vimeo";
 		}
 	else if (strpos($video_url, "wistia.com/") !== FALSE)
 		{
 		$video_info->highres_url = str_replace('?image_crop_resized=100x60','',$video_info->thumbnail_url);
 		$video_info->medres_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=640x400',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=240x135',$video_info->thumbnail_url);
+		$video_info->video_provider = "wistia";
 		}
 	else if (strpos($video_url, "viddler.com/") !== FALSE)
 		{
 		$video_info->highres_url = $video_info->thumbnail_url;
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('thumbnail_2','thumbnail_1',$video_info->thumbnail_url);
+		$video_info->video_provider = "viddler";
 		}
 
 
