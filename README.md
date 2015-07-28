@@ -30,7 +30,6 @@ Usage
 	    {if:else}
 	        No video to display here.
 	    {/if}
-
 	{/exp:antenna}
 
 
@@ -46,9 +45,12 @@ Antenna will automatically enforce HTTPS if the provided video URL has a protoco
 
 - force_https='true'
 
-If you're using YouTube, you get access to one more parameter:
+If you're using YouTube, you get access to several more parameters, such as:
 
 - youtube_rel='0/1' -- Show related videos at end of video. Defaults to 1.
+- youtube_showinfo ='0/1' -- Show the video title and uploader. Defaults to 1.
+
+See https://developers.google.com/youtube/player_parameters#Parameters for the full list of HTML5 parameters available for YouTube videos. Prefix each parameter with `youtube_` when adding these parameters to your Antenna template tag.
 
 If you're using Vimeo, you get access to four more parameters and one more variable:
 
