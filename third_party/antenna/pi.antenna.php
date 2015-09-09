@@ -50,7 +50,9 @@ class Antenna
 			"medres_url"	=>  "video_mediumres",
 			"highres_url"	=>  "video_highres",
 			"description"   =>  "video_description",
-			"provider"      =>  "video_provider"
+			"provider"      =>  "video_provider",
+			"width" 		=>	"video_width",
+			"height" 		=>	"video_height"
 		);
 
 		$video_data = array();

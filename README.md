@@ -21,6 +21,8 @@ Usage
 	    {video_mediumres}
 	    {video_highres}
 	    {video_provider}
+	    {video_width}
+	    {video_height}
 
 	    {!-- For Vimeo Only --}
 	    {video_description}
