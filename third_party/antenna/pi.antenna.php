@@ -50,7 +50,9 @@ class Antenna
 			"medres_url"	=>  "video_mediumres",
 			"highres_url"	=>  "video_highres",
 			"description"   =>  "video_description",
-			"provider"      =>  "video_provider"
+			"provider"      =>  "video_provider",
+			"width" 		=>	"video_width",
+			"height" 		=>	"video_height"
 		);
 
 		$video_data = array();
@@ -75,7 +77,40 @@ class Antenna
 		}
 
 		// Some optional YouTube parameters
-		$youtube_rel = $this->EE->TMPL->fetch_param('youtube_rel', null);
+		$youtube_options = array(
+			'autohide',
+			'autoplay',
+			'cc_load_policy',
+			'color',
+			'controls',
+			'disablekb',
+			'enablejsapi',
+			'end',
+			'fs',
+			'hl',
+			'iv_load_policy',
+			'list',
+			'listType',
+			'loop',
+			'modestbranding',
+			'origin',
+			'playlist',
+			'playsinline',
+			'rel',
+			'showinfo',
+			'start',
+			'theme'
+		);
+		$youtube_params = array();
+		
+		foreach($youtube_options as $option)
+		{
+			$param = $this->EE->TMPL->fetch_param('youtube_'.$option, null);
+			if(!is_null($param))
+			{
+				$youtube_params[$option] = $param;
+			}
+		}
 
 		// Some optional Vimeo parameters
 		$vimeo_byline	= ($this->EE->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
@@ -163,11 +198,16 @@ class Antenna
 	    	}
     	}
 
-    	// Inject YouTube rel value if required
-    	if (!is_null($youtube_rel) && (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE))
+    	// Inject YouTube parameters if required
+    	if( !empty($youtube_params) && (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE))
 		{
+			$youtube_args = '';
+			foreach($youtube_params as $param => $value)
+			{
+				$youtube_args .= '&'.$param.'=' . $value;
+			}
 			preg_match('/.*?src="(.*?)".*?/', $video_info->html, $matches);
-			if (!empty($matches[1])) $video_info->html = str_replace($matches[1], $matches[1] . '&rel=' . $youtube_rel, $video_info->html);
+			if (!empty($matches[1])) $video_info->html = str_replace($matches[1], $matches[1] . $youtube_args, $video_info->html);
 		}
 
 
