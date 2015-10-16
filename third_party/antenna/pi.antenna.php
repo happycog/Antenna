@@ -256,6 +256,11 @@ class Antenna
 			}
 		}
 
+		if(!empty($video_info->width) && !empty($video_info->height))
+		{
+			$video_data['video_ratio'] = floatval($video_info->width / $video_info->height);
+		}
+
 		$tagdata = $this->EE->functions->prep_conditionals($tagdata, $video_data);
 
 		foreach ($video_data as $key => $value)
