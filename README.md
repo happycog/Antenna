@@ -21,6 +21,7 @@ Usage
 	    {video_mediumres}
 	    {video_highres}
 	    {video_provider}
+		{video_ratio}
 	    {video_width}
 	    {video_height}
 
