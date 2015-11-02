@@ -90,6 +90,8 @@ Compatibility
 
 You must be using PHP 5.2+ and you must have either the `cURL` library installed or `allow_url_fopen` enabled.
 
+*Note for Wistia users*: Wistia doesn't return as much data as the other providers, so not all of the above variables will work. Also, you may need to contact Wistia and ask them to enable "oEmbed support" on your account.
+
 Warranty/License
 -------
 
