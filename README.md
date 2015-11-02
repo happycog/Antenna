@@ -79,7 +79,7 @@ If you're using Viddler, you get access to two more parameters:
 - `viddler_type='simple/player'` -- Specifies the player type. Defaults to player.
 - `viddler_ratio='widescreen/fullscreen'` -- Aspect ratio will be automatically determined if not set.
 
-The plugin automatically caches returned data for one week. You can control this setting with the cache_minutes parameter, or set cache_minutes to "0" to disable the cache.
+The plugin automatically caches returned data for one week. You can control this setting with the `cache_minutes` parameter, or set `cache_minutes` to "`0`" to disable the cache.
 
 **NOTE** For this to work with all urls please ensure that in Weblog/Channel -> Preferences, you have 'Automatically turn URLs and email addresses into links?' set to 'No'.
 
