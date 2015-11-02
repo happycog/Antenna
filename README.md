@@ -64,7 +64,7 @@ If you're using YouTube, you get access to several more parameters, such as:
 
 See [this guide from Google](https://developers.google.com/youtube/player_parameters#Parameters) for the full list of HTML5 parameters available for YouTube videos. Prefix each parameter with `youtube_` when adding these parameters to your Antenna template tag.
 
-If you're using Vimeo, you get access to four more parameters and one more variable:
+If you're using Vimeo, you get access to more parameters and one more variable:
 
 - `vimeo_byline='true/false'` -- Shows the byline on the video. Defaults to true.
 - `vimeo_title='true/false'` -- Shows the title on the video. Defaults to true.
