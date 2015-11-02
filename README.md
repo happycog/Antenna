@@ -1,13 +1,22 @@
-Antenna for ExpressionEngine 1 & 2
+Antenna for ExpressionEngine 2 & 3
 ========
 
 **Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
 
 You can also output various pieces of metadata about the video.
 
-Support for Expression Engine 1 ended with v1.23. That version can still be downloaded here: https://github.com/vector/Antenna/releases/tag/v1.23
+Support for ExpressionEngine 1 ended with v1.23. That version can still be [downloaded here](https://github.com/vector/Antenna/releases/tag/v1.23).
 
-For ExpressionEngine 2 installation, the directory /third_party/antenna should be placed in /system/expressionengine/third_party/
+Support for ExpressionEngine 3 started with version 2.
+
+Installation
+-------
+
+- ExpressionEngine 2:
+  - Place the directory `/third_party/antenna` in `/system/expressionengine/third_party/`.
+- ExpressionEngine 3:
+  - Place the directory `/third_party/antenna` in `/system/user/addons/`.
+  - Go go the addon manager and click "Install" next to Antenna.
 
 Usage
 -------
@@ -36,48 +45,48 @@ Usage
 	{/exp:antenna}
 
 
-Set the max\_width and/or max\_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
+Set the `max_width` and/or `max_height` for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
 
-The optional wmode parameter can be used if you're experiencing issues positioning HTML content in front of the embedded media. It accepts values of transparent, opaque and window.
+The optional `wmode` parameter can be used if you're experiencing issues positioning HTML content in front of the embedded media. It accepts values of transparent, opaque and window.
 
-If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
+If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the variables above and can use them in conditionals.
 
-There are three image sizes available for videos: {video_thumbnail}, {video_mediumres}, and {video_highres}. They are not consistent across services but they should fall into rough size brackets. {video_thumbnail} is going to be between 100-200px wide; {video_mediumres} will be around 400-500px wide; and {video_highres} will be at least the full size of your uploaded video and could be as wide as 1280px.
+There are three image sizes available for videos: `{video_thumbnail}`, `{video_mediumres}`, and `{video_highres}`. They are not consistent across services but they should fall into rough size brackets. `{video_thumbnail}` is going to be between 100-200px wide; `{video_mediumres}` will be around 400-500px wide; and `{video_highres}` will be at least the full size of your uploaded video and could be as wide as 1280px.
 
-Antenna will automatically enforce HTTPS if the provided video URL has a protocol of https:// and is supported by the video service. Alternatively, you can also attempt to force the particular service to return the HTTPS resource by adding the parameter:
+Antenna will automatically enforce HTTPS if the provided video URL has a protocol of `https://` and is supported by the video service. Alternatively, you can also attempt to force the particular service to return the HTTPS resource by adding the parameter:
 
-- force_https='true'
+    force_https='true'
 
 If you're using YouTube, you get access to several more parameters, such as:
 
-- youtube_rel='0/1' -- Show related videos at end of video. Defaults to 1.
-- youtube_showinfo ='0/1' -- Show the video title and uploader. Defaults to 1.
+- `youtube_rel='0/1'` -- Show related videos at end of video. Defaults to 1.
+- `youtube_showinfo ='0/1'` -- Show the video title and uploader. Defaults to 1.
 
-See https://developers.google.com/youtube/player_parameters#Parameters for the full list of HTML5 parameters available for YouTube videos. Prefix each parameter with `youtube_` when adding these parameters to your Antenna template tag.
+See [this guide from Google](https://developers.google.com/youtube/player_parameters#Parameters) for the full list of HTML5 parameters available for YouTube videos. Prefix each parameter with `youtube_` when adding these parameters to your Antenna template tag.
 
 If you're using Vimeo, you get access to four more parameters and one more variable:
 
-- vimeo_byline='true/false' -- Shows the byline on the video. Defaults to true.
-- vimeo_title='true/false' -- Shows the title on the video. Defaults to true.
-- vimeo_portrait='true/false' -- Shows the user's avatar on the video. Defaults to true.
-- vimeo_autoplay='true/false' -- Automatically start playback of the video. Defaults to false.
-- vimeo_api='true/false' -- Adds 'api=1' to the vimeo embed url to allow JavaScript API usage. Defaults to false.
-- vimeo_color='EFEFEF' -- changes the color of the player controls, and the color of the video title (if enabled). The parameter here expects a hex color code.
-- {video_description} -- The description of the video, as set in Vimeo
+- `vimeo_byline='true/false'` -- Shows the byline on the video. Defaults to true.
+- `vimeo_title='true/false'` -- Shows the title on the video. Defaults to true.
+- `vimeo_portrait='true/false'` -- Shows the user's avatar on the video. Defaults to true.
+- `vimeo_autoplay='true/false'` -- Automatically start playback of the video. Defaults to false.
+- `vimeo_api='true/false'` -- Adds 'api=1' to the vimeo embed url to allow JavaScript API usage. Defaults to false.
+- `vimeo_color='EFEFEF'` -- changes the color of the player controls, and the color of the video title (if enabled). The parameter here expects a hex color code.
+- `{video_description}` -- The description of the video, as set in Vimeo
 
 If you're using Viddler, you get access to two more parameters:
 
-- viddler_type='simple/player' -- Specifies the player type. Defaults to player.
-- viddler_ratio='widescreen/fullscreen' -- Aspect ratio will be automatically determined if not set.
+- `viddler_type='simple/player'` -- Specifies the player type. Defaults to player.
+- `viddler_ratio='widescreen/fullscreen'` -- Aspect ratio will be automatically determined if not set.
 
 **NOTE** For this to work with all urls please ensure that in Weblog/Channel -> Preferences, you have 'Automatically turn URLs and email addresses into links?' set to 'No'.
 
 Compatibility
 -------
 
-**Antenna** is compatible with ExpressionEngine 1 & 2. The version for ExpressionEngine 1 has been tested on 1.6.9 but will likely work with older versions. The version for ExpressionEngine 2 has been tested on 2.1+.
+**Antenna** is compatible with ExpressionEngine 2 & 3. The version for ExpressionEngine 2 requires 2.6+. The version for ExpressionEngine 3 has been tested on 3.0+.
 
-You must be using PHP 5.2+, though I haven't tested with PHP 5.3, and you must have either the cURL library installed or allow_url_fopen enabled.
+You must be using PHP 5.2+ and you must have either the `cURL` library installed or `allow_url_fopen` enabled.
 
 Warranty/License
 -------

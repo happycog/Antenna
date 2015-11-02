@@ -7,13 +7,14 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * Copyright Matt Weinberg, www.VectorMediaGroup.com
  */
 
+// Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '1.41',
+	'pi_version'		=> '2.0.0',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
-	'pi_usage'			=> Antenna::usage()
+	'pi_usage'			=> 'https://github.com/vector/antenna'
 );
 
 /**
@@ -29,14 +30,15 @@ class Antenna
 {
 	public $return_data = '';
 	public $cache_name = 'antenna_urls';
+	public $cache_path = '';
 	public $refresh_cache = 10080;			// in mintues (default is 1 week)
 	public $cache_expired = FALSE;
 
 	public function Antenna()
 	{
-		$this->EE =& get_instance();
+		$this->_set_cache_path();
 
-		$tagdata = $this->EE->TMPL->tagdata;
+		$tagdata = ee()->TMPL->tagdata;
 
 		// Check to see if it's a one-off tag or a pair
 		$mode = ($tagdata) ? "pair" : "single";
@@ -62,18 +64,18 @@ class Antenna
 		}
 
 		// Deal with the parameters
-		$video_url = ($this->EE->TMPL->fetch_param('url')) ?  html_entity_decode($this->EE->TMPL->fetch_param('url')) : false;
-		$max_width = ($this->EE->TMPL->fetch_param('max_width')) ? "&maxwidth=" . $this->EE->TMPL->fetch_param('max_width') : "";
-		$max_height = ($this->EE->TMPL->fetch_param('max_height')) ? "&maxheight=" . $this->EE->TMPL->fetch_param('max_height') : "";
-		$wmode = ($this->EE->TMPL->fetch_param('wmode')) ? $this->EE->TMPL->fetch_param('wmode') : "";
-		$wmode_param = ($this->EE->TMPL->fetch_param('wmode')) ? "&wmode=" . $this->EE->TMPL->fetch_param('wmode') : "";
+		$video_url = (ee()->TMPL->fetch_param('url')) ?  html_entity_decode(ee()->TMPL->fetch_param('url')) : false;
+		$max_width = (ee()->TMPL->fetch_param('max_width')) ? "&maxwidth=" . ee()->TMPL->fetch_param('max_width') : "";
+		$max_height = (ee()->TMPL->fetch_param('max_height')) ? "&maxheight=" . ee()->TMPL->fetch_param('max_height') : "";
+		$wmode = (ee()->TMPL->fetch_param('wmode')) ? ee()->TMPL->fetch_param('wmode') : "";
+		$wmode_param = (ee()->TMPL->fetch_param('wmode')) ? "&wmode=" . ee()->TMPL->fetch_param('wmode') : "";
 
 		// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-		if (empty($max_height)) $max_height = "&maxheight=" . $this->EE->TMPL->fetch_param('max_width');
+		if (empty($max_height)) $max_height = "&maxheight=" . ee()->TMPL->fetch_param('max_width');
 
 		// Cache can be disabled by setting 0 as the cache_minutes param
-		if ($this->EE->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric($this->EE->TMPL->fetch_param('cache_minutes'))) {
-			$this->refresh_cache = $this->EE->TMPL->fetch_param('cache_minutes');
+		if (ee()->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric(ee()->TMPL->fetch_param('cache_minutes'))) {
+			$this->refresh_cache = ee()->TMPL->fetch_param('cache_minutes');
 		}
 
 		// Some optional YouTube parameters
@@ -105,7 +107,7 @@ class Antenna
 		
 		foreach($youtube_options as $option)
 		{
-			$param = $this->EE->TMPL->fetch_param('youtube_'.$option, null);
+			$param = ee()->TMPL->fetch_param('youtube_'.$option, null);
 			if(!is_null($param))
 			{
 				$youtube_params[$option] = $param;
@@ -113,20 +115,20 @@ class Antenna
 		}
 
 		// Some optional Vimeo parameters
-		$vimeo_byline	= ($this->EE->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
-		$vimeo_title	= ($this->EE->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
-		$vimeo_autoplay	= ($this->EE->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
-		$vimeo_portrait	= ($this->EE->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
-		$vimeo_api	= ($this->EE->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
-		$vimeo_color 	= ($this->EE->TMPL->fetch_param('vimeo_color') !== false) ? "&color=".str_replace('#', '', $this->EE->TMPL->fetch_param('vimeo_color')) : "";
+		$vimeo_byline	= (ee()->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
+		$vimeo_title	= (ee()->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
+		$vimeo_autoplay	= (ee()->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
+		$vimeo_portrait	= (ee()->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
+		$vimeo_api	= (ee()->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
+		$vimeo_color 	= (ee()->TMPL->fetch_param('vimeo_color') !== false) ? "&color=".str_replace('#', '', ee()->TMPL->fetch_param('vimeo_color')) : "";
 		
 		// Some optional Viddler parameters
-		$viddler_type = ($this->EE->TMPL->fetch_param('viddler_type')) ? "&type=" . $this->EE->TMPL->fetch_param('viddler_type') : "";
-		$viddler_ratio = ($this->EE->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . $this->EE->TMPL->fetch_param('viddler_ratio') : "";
+		$viddler_type = (ee()->TMPL->fetch_param('viddler_type')) ? "&type=" . ee()->TMPL->fetch_param('viddler_type') : "";
+		$viddler_ratio = (ee()->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . ee()->TMPL->fetch_param('viddler_ratio') : "";
 
 		// Automatically handle scheme if https
 		$is_https = false;
-		if ($this->EE->TMPL->fetch_param('force_https') == "true" || parse_url($video_url, PHP_URL_SCHEME) == 'https') {
+		if (ee()->TMPL->fetch_param('force_https') == "true" || parse_url($video_url, PHP_URL_SCHEME) == 'https') {
 			$is_https = true;
 		}
 
@@ -140,7 +142,7 @@ class Antenna
 		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
 			$url = "http://www.viddler.com/oembed/?format=xml&url=";
 		} else {
-			$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
+			$tagdata = ee()->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
@@ -158,7 +160,7 @@ class Antenna
 
 			if (!$video_info || $video_header != "200")
 			{
-				$tagdata = $this->EE->functions->var_swap($tagdata, $video_data);
+				$tagdata = ee()->functions->var_swap($tagdata, $video_data);
 				$this->return_data = $tagdata;
 				return;
 			}
@@ -261,16 +263,22 @@ class Antenna
 			$video_data['video_ratio'] = floatval($video_info->width / $video_info->height);
 		}
 
-		$tagdata = $this->EE->functions->prep_conditionals($tagdata, $video_data);
+		$tagdata = ee()->functions->prep_conditionals($tagdata, $video_data);
 
 		foreach ($video_data as $key => $value)
 		{
-			$tagdata = $this->EE->TMPL->swap_var_single($key, $value, $tagdata);
+			$tagdata = ee()->TMPL->swap_var_single($key, $value, $tagdata);
 		}
 
 		$this->return_data = $tagdata;
 
 		return;
+	}
+
+	private function _set_cache_path() {
+		$this->cache_path = version_compare(APP_VER, '3.0.0', '>=') ? SYSPATH  . 'user/' : APPPATH;
+		$this->cache_path .= 'cache/' . $this->cache_name . '/';
+		return '';
 	}
 
 	/**
@@ -329,7 +337,7 @@ class Antenna
 	{
 		// Check for cache directory
 
-		$dir = APPPATH . 'cache/' . $this->cache_name . '/';
+		$dir = $this->cache_path;
 
 		if ( ! @is_dir($dir))
 		{
@@ -381,7 +389,7 @@ class Antenna
 	{
 		// Check for cache directory
 
-		$dir = APPPATH . 'cache/' . $this->cache_name . '/';
+		$dir = $this->cache_path;
 
 		if ( ! @is_dir($dir))
 		{
@@ -414,57 +422,4 @@ class Antenna
 		@chmod($file, DIR_WRITE_MODE);
 	}
 
-	/**
-	 * ExpressionEngine plugins require this for displaying
-	 * usage in the control panel
-	 * @access public
-	 * @return string
-	 */
-    public static function usage()
-	{
-		ob_start();
-?>
-Antenna is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. It also gives you access to the video’s title, its author, the author’s YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
-
-You can also output various pieces of metadata about the YouTube video.
-
-{exp:antenna url='{the_youtube_or_vimeo_url}' max_width="232" max_height="323" cache_minutes="120" wmode="transparent|opaque|window"}
-    {embed_code}
-    {video_title}
-    {video_author}
-    {video_author_url}
-    {video_thumbnail}
-    {video_mediumres}
-    {video_highres}
-    {video_provider}
-
-    {!-- For Vimeo Only --}
-    {video_description}
-
-	{if embed_code}
-		It worked! {embed_code}
-	{if:else}
-		No video to display here.
-	{/if}
-
-{/exp:antenna}
-
-Set the max_width and/or max_height for whatever size your website requires. The video will be resized to be within those dimensions, and will stay at the correct proportions.
-
-The optional wmode parameter can be used if you're experiencing issues positioning HTML content in front of the embedded media. It accepts values of transparent, opaque and window.
-
-If used as a single tag, it returns the HTML embed/object code for the video. If used as a pair, you get access to the 5 variables above and can use them in conditionals.
-
-The cache defaults to 1 week. It can be completely disabled by setting cache_minutes="0".
-
-Note for Wistia users: Wistia doesn’t return as much data as the other providers, so not all of the above variables will work. Also, you may need to contact Wistia and ask them to enable "oEmbed support" on your account for this to work.
-
-<?php
-		$buffer = ob_get_contents();
-
-		ob_end_clean();
-
-		return $buffer;
-	}
-	// END
 }
