@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.0.0',
+	'pi_version'		=> '2.0.1',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -120,6 +120,7 @@ class Antenna
 		$vimeo_autoplay	= (ee()->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
 		$vimeo_portrait	= (ee()->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
 		$vimeo_api	= (ee()->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
+		$vimeo_loop	= (ee()->TMPL->fetch_param('vimeo_loop') == "true") ? "&loop=true" : "";
 		$vimeo_color 	= (ee()->TMPL->fetch_param('vimeo_color') !== false) ? "&color=".str_replace('#', '', ee()->TMPL->fetch_param('vimeo_color')) : "";
 		
 		// Some optional Viddler parameters
@@ -148,7 +149,7 @@ class Antenna
 		}
 
 
-		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $vimeo_api . $vimeo_color . $viddler_type . $viddler_ratio;
+		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $vimeo_api . $vimeo_color . $viddler_type . $viddler_ratio . $vimeo_loop;
 
 		// checking if url has been cached
 		$cached_url = $this->_check_cache($url);
