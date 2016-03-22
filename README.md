@@ -72,6 +72,7 @@ If you're using Vimeo, you get access to more parameters and one more variable:
 - `vimeo_autoplay='true/false'` -- Automatically start playback of the video. Defaults to false.
 - `vimeo_api='true/false'` -- Adds 'api=1' to the vimeo embed url to allow JavaScript API usage. Defaults to false.
 - `vimeo_color='EFEFEF'` -- changes the color of the player controls, and the color of the video title (if enabled). The parameter here expects a hex color code.
+- `vimeo_loop='true/false'` -- loops the Vimeo video automatically
 - `{video_description}` -- The description of the video, as set in Vimeo
 
 If you're using Viddler, you get access to two more parameters:
