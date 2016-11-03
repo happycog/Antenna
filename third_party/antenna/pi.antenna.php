@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.0.1',
+	'pi_version'		=> '2.1.0',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -64,14 +64,20 @@ class Antenna
 		}
 
 		// Deal with the parameters
-		$video_url = (ee()->TMPL->fetch_param('url')) ?  html_entity_decode(ee()->TMPL->fetch_param('url')) : false;
-		$max_width = (ee()->TMPL->fetch_param('max_width')) ? "&maxwidth=" . ee()->TMPL->fetch_param('max_width') : "";
-		$max_height = (ee()->TMPL->fetch_param('max_height')) ? "&maxheight=" . ee()->TMPL->fetch_param('max_height') : "";
-		$wmode = (ee()->TMPL->fetch_param('wmode')) ? ee()->TMPL->fetch_param('wmode') : "";
-		$wmode_param = (ee()->TMPL->fetch_param('wmode')) ? "&wmode=" . ee()->TMPL->fetch_param('wmode') : "";
+		$video_url = (ee()->TMPL->fetch_param('url')) ? html_entity_decode(ee()->TMPL->fetch_param('url')) : false;
+		$max_width = (ee()->TMPL->fetch_param('max_width')) ? "&maxwidth=" . ee()->TMPL->fetch_param('max_width') : '';
+		$max_height = (ee()->TMPL->fetch_param('max_height')) ? "&maxheight=" . ee()->TMPL->fetch_param('max_height') : '';
+		$wmode = ee()->TMPL->fetch_param('wmode', '');
+		$wmode_param = ! empty($wmode) ? "&wmode=" . $wmode : '';
+
+		// Check for embed.ly support
+		$embedly_key = ee()->TMPL->fetch_param('embedly_key', false);
+		if ( ! $embedly_key && ee()->config->item('antenna_embedly_key')) {
+			$embedly_key = ee()->config->item('antenna_embedly_key');
+		}
 
 		// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-		if (empty($max_height)) $max_height = "&maxheight=" . ee()->TMPL->fetch_param('max_width');
+		if (empty($max_height)) $max_height = "&maxheight=" . $max_width;
 
 		// Cache can be disabled by setting 0 as the cache_minutes param
 		if (ee()->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric(ee()->TMPL->fetch_param('cache_minutes'))) {
@@ -104,7 +110,7 @@ class Antenna
 			'theme'
 		);
 		$youtube_params = array();
-		
+
 		foreach($youtube_options as $option)
 		{
 			$param = ee()->TMPL->fetch_param('youtube_'.$option, null);
@@ -115,17 +121,17 @@ class Antenna
 		}
 
 		// Some optional Vimeo parameters
-		$vimeo_byline	= (ee()->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : "";
-		$vimeo_title	= (ee()->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : "";
-		$vimeo_autoplay	= (ee()->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : "";
-		$vimeo_portrait	= (ee()->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : "";
-		$vimeo_api	= (ee()->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : "";
-		$vimeo_loop	= (ee()->TMPL->fetch_param('vimeo_loop') == "true") ? "&loop=true" : "";
-		$vimeo_color 	= (ee()->TMPL->fetch_param('vimeo_color') !== false) ? "&color=".str_replace('#', '', ee()->TMPL->fetch_param('vimeo_color')) : "";
-		
+		$vimeo_byline	= (ee()->TMPL->fetch_param('vimeo_byline') == "false") ? "&byline=false" : '';
+		$vimeo_title	= (ee()->TMPL->fetch_param('vimeo_title') == "false") ? "&title=false" : '';
+		$vimeo_autoplay	= (ee()->TMPL->fetch_param('vimeo_autoplay') == "true") ? "&autoplay=true" : '';
+		$vimeo_portrait	= (ee()->TMPL->fetch_param('vimeo_portrait') == "false") ? "&portrait=0" : '';
+		$vimeo_api	= (ee()->TMPL->fetch_param('vimeo_api') == "true") ? "&api=1" : '';
+		$vimeo_loop	= (ee()->TMPL->fetch_param('vimeo_loop') == "true") ? "&loop=true" : '';
+		$vimeo_color 	= (ee()->TMPL->fetch_param('vimeo_color') !== false) ? "&color=".str_replace('#', '', ee()->TMPL->fetch_param('vimeo_color')) : '';
+
 		// Some optional Viddler parameters
-		$viddler_type = (ee()->TMPL->fetch_param('viddler_type')) ? "&type=" . ee()->TMPL->fetch_param('viddler_type') : "";
-		$viddler_ratio = (ee()->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . ee()->TMPL->fetch_param('viddler_ratio') : "";
+		$viddler_type = (ee()->TMPL->fetch_param('viddler_type')) ? "&type=" . ee()->TMPL->fetch_param('viddler_type') : '';
+		$viddler_ratio = (ee()->TMPL->fetch_param('viddler_ratio')) ? "&ratio=" . ee()->TMPL->fetch_param('viddler_ratio') : '';
 
 		// Automatically handle scheme if https
 		$is_https = false;
@@ -135,19 +141,20 @@ class Antenna
 
 		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
 		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
-			$url = "http://www.youtube.com/oembed?format=xml&iframe=1" . ($is_https ? '&scheme=https' : '') . "&url=";
-		} else if (strpos($video_url, "vimeo.com/") !== FALSE) {
-			$url = "http" . ($is_https ? 's' : '') . "://vimeo.com/api/oembed.xml?url=";
-		} else if (strpos($video_url, "wistia.com/") !== FALSE) {
-			$url = "http://app.wistia.com/embed/oembed.xml?url=";
-		} else if (strpos($video_url, "viddler.com/") !== FALSE) {
-			$url = "http://www.viddler.com/oembed/?format=xml&url=";
+			$url = 'http://www.youtube.com/oembed?format=xml&iframe=1' . ($is_https ? '&scheme=https' : '') . '&url=';
+		} elseif (strpos($video_url, "vimeo.com/") !== FALSE) {
+			$url = 'http' . ($is_https ? 's' : '') . '://vimeo.com/api/oembed.xml?url=';
+		} elseif (strpos($video_url, "wistia.com/") !== FALSE) {
+			$url = 'http://app.wistia.com/embed/oembed.xml?url=';
+		} elseif (strpos($video_url, "viddler.com/") !== FALSE) {
+			$url = 'http://www.viddler.com/oembed/?format=xml&url=';
+		} elseif ($embedly_key) {
+			$url = 'https://api.embedly.com/1/oembed?format=xml&key=' . urlencode($embedly_key) . '&url=';
 		} else {
 			$tagdata = ee()->functions->var_swap($tagdata, $video_data);
 			$this->return_data = $tagdata;
 			return;
 		}
-
 
 		$url .= urlencode($video_url) . $max_width . $max_height . $wmode_param . $vimeo_byline . $vimeo_title . $vimeo_autoplay . $vimeo_portrait . $vimeo_api . $vimeo_color . $viddler_type . $viddler_ratio . $vimeo_loop;
 

@@ -1,7 +1,7 @@
 Antenna for ExpressionEngine 2 & 3
 ========
 
-**Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. It also gives you access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
+**Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. With an [embed.ly](http://embed.ly/) API key, you also have access to [hundreds more video providers](http://embed.ly/providers). You also have access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
 
 You can also output various pieces of metadata about the video.
 
@@ -83,6 +83,25 @@ If you're using Viddler, you get access to two more parameters:
 The plugin automatically caches returned data for one week. You can control this setting with the `cache_minutes` parameter, or set `cache_minutes` to "`0`" to disable the cache.
 
 **NOTE** For this to work with all urls please ensure that in Weblog/Channel -> Preferences, you have 'Automatically turn URLs and email addresses into links?' set to 'No'.
+
+Embed.ly Support
+-------
+
+By including an [embed.ly](http://embed.ly/) API key, you have access to [hundreds more video providers](http://embed.ly/providers). If your URL is not for YouTube, Vimeo, Wistia, or Viddler, **Antenna** will check embed.ly to pull the correct relevant video embed and information.
+
+Simply include your embed.ly API key as a parameter on your `{exp:antenna}` tag like:
+
+```
+{exp:antenna url='{example_vine_url}' embedly_key="xxxxxxxxxx" max_width="232" max_height="323"  wmode="transparent|opaque|window"}
+	...
+{/exp:antenna}
+```
+
+or set your embed.ly API key globally by adding it to ExpressionEngine's `config.php` file:
+
+```
+$config['antenna_embedly_key'] = 'xxxxxxxxxx';
+```
 
 Compatibility
 -------
