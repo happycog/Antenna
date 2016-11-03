@@ -1,7 +1,7 @@
 Antenna for ExpressionEngine 2 & 3
 ========
 
-**Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. With an [embed.ly](http://embed.ly/) API key, you also have access to [hundreds more video providers](http://embed.ly/providers). You also have access to the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
+**Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. With an [embed.ly](http://embed.ly/) API key, you also have access to [hundreds more video providers](http://embed.ly/providers). In addition to the video's embed code, **Antenna** also provides you with the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
 
 You can also output various pieces of metadata about the video.
 
