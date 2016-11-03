@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.1.0',
+	'pi_version'		=> '2.1.1',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -76,9 +76,6 @@ class Antenna
 			$embedly_key = ee()->config->item('antenna_embedly_key');
 		}
 
-		// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-		if (empty($max_height)) $max_height = "&maxheight=" . $max_width;
-
 		// Cache can be disabled by setting 0 as the cache_minutes param
 		if (ee()->TMPL->fetch_param('cache_minutes') !== FALSE && is_numeric(ee()->TMPL->fetch_param('cache_minutes'))) {
 			$this->refresh_cache = ee()->TMPL->fetch_param('cache_minutes');
@@ -141,6 +138,9 @@ class Antenna
 
 		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
 		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
+			// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
+			if (empty($max_height)) $max_height = "&maxheight=" . $max_width;
+			
 			$url = 'http://www.youtube.com/oembed?format=xml&iframe=1' . ($is_https ? '&scheme=https' : '') . '&url=';
 		} elseif (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = 'http' . ($is_https ? 's' : '') . '://vimeo.com/api/oembed.xml?url=';
