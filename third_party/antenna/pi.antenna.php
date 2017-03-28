@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.1.1',
+	'pi_version'		=> '2.1.2',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -34,7 +34,7 @@ class Antenna
 	public $refresh_cache = 10080;			// in mintues (default is 1 week)
 	public $cache_expired = FALSE;
 
-	public function Antenna()
+	public function __construct()
 	{
 		$this->_set_cache_path();
 
