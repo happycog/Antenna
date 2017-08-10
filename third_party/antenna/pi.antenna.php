@@ -236,7 +236,8 @@ class Antenna
 		}
 	else if (strpos($video_url, "wistia.com/") !== FALSE)
 		{
-		$video_info->highres_url = str_replace('?image_crop_resized=100x60','',$video_info->thumbnail_url);
+		// For now, turn the image_crop_resized query string into an unrecognized value
+		$video_info->highres_url = str_replace('image_crop_resized=','icrtemp=',$video_info->thumbnail_url);
 		$video_info->medres_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=640x400',$video_info->thumbnail_url);
 		$video_info->thumbnail_url = str_replace('?image_crop_resized=100x60','?image_crop_resized=240x135',$video_info->thumbnail_url);
 		$video_info->provider = "wistia";
