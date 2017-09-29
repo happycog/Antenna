@@ -54,7 +54,8 @@ class Antenna
 			"description"   =>  "video_description",
 			"provider"      =>  "video_provider",
 			"width" 		=>	"video_width",
-			"height" 		=>	"video_height"
+			"height" 		=>	"video_height",
+			"video_id"		=>	"video_provider_id"
 		);
 
 		$video_data = array();
