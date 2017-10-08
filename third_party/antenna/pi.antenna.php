@@ -228,13 +228,15 @@ class Antenna
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
 		$video_info->provider = "youtube";
+
 		if(strpos($video_url, "youtube.com/") !== FALSE) {
-			$parts = parse_url($video_url);
-			parse_str($parts['query'], $query);
-			$video_info->video_id = $query['v'];
-			} else {
-				$video_info->video_id = str_replace('http://youtu.be/', '', $video_url);
-			}
+			$qs = parse_url($video_url, PHP_URL_QUERY);
+			parse_str($qs, $query_params);
+			$video_info->video_id = $query_params['v'];
+		} else {
+			$video_info->video_id = ltrim(parse_url($video_url, PHP_URL_PATH), '/');
+		}
+
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280.',$video_info->thumbnail_url);
