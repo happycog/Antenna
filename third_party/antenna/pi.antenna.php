@@ -54,7 +54,8 @@ class Antenna
 			"description"   =>  "video_description",
 			"provider"      =>  "video_provider",
 			"width" 		=>	"video_width",
-			"height" 		=>	"video_height"
+			"height" 		=>	"video_height",
+			"video_id"		=>	"video_provider_id"
 		);
 
 		$video_data = array();
@@ -227,6 +228,15 @@ class Antenna
 		$video_info->medres_url = $video_info->thumbnail_url;
 		$video_info->thumbnail_url = str_replace('hqdefault','mqdefault',$video_info->thumbnail_url);
 		$video_info->provider = "youtube";
+
+		if(strpos($video_url, "youtube.com/") !== FALSE) {
+			$qs = parse_url($video_url, PHP_URL_QUERY);
+			parse_str($qs, $query_params);
+			$video_info->video_id = $query_params['v'];
+		} else {
+			$video_info->video_id = ltrim(parse_url($video_url, PHP_URL_PATH), '/');
+		}
+
 		}
 	else if (strpos($video_url, "vimeo.com/") !== FALSE) {
 		$video_info->highres_url = preg_replace('/_(.*?)\./','_1280.',$video_info->thumbnail_url);

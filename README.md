@@ -33,6 +33,7 @@ Usage
 	    {video_ratio}
 	    {video_width}
 	    {video_height}
+	    {video_provider_id}
 
 	    {!-- For Vimeo Only --}
 	    {video_description}
