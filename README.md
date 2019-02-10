@@ -1,4 +1,4 @@
-Antenna for ExpressionEngine 2, 3, and 4
+Antenna for ExpressionEngine 2, 3, 4, and 5
 ========
 
 **Antenna** is a plugin that will generate the exact, most up-to-date YouTube, Vimeo, Wistia, or Viddler embed code available. With an [embed.ly](http://embed.ly/) API key, you also have access to [hundreds more video providers](http://embed.ly/providers). In addition to the video's embed code, **Antenna** also provides you with the video's title, its author, the author's YouTube/Vimeo URL, and a thumbnail. All you have to do is pass it a single URL.
@@ -7,14 +7,14 @@ You can also output various pieces of metadata about the video.
 
 Support for ExpressionEngine 1 ended with v1.23. That version can still be [downloaded here](https://github.com/vector/Antenna/releases/tag/v1.23).
 
-Support for ExpressionEngine 3 and 4 started with version 2.
+Support for ExpressionEngine 3, 4, and 5 started with version 2.
 
 Installation
 -------
 
 - ExpressionEngine 2:
   - Place the directory `/third_party/antenna` in `/system/expressionengine/third_party/`.
-- ExpressionEngine 3 and 4:
+- ExpressionEngine 3, 4, 5:
   - Place the directory `/third_party/antenna` in `/system/user/addons/`.
   - Go go the addon manager and click "Install" next to Antenna.
 
@@ -107,7 +107,7 @@ $config['antenna_embedly_key'] = 'xxxxxxxxxx';
 Compatibility
 -------
 
-**Antenna** is compatible with ExpressionEngine 2, 3, and 4. The version for ExpressionEngine 2 requires 2.6+. The version for ExpressionEngine 3 and 4 has been tested on 3.0+.
+**Antenna** is compatible with ExpressionEngine 2-5. The version for ExpressionEngine 2 requires 2.6+. The version for ExpressionEngine 3-5 has been tested on 3.0+.
 
 You must be using PHP 5.2+ and you must have either the `cURL` library installed or `allow_url_fopen` enabled.
 
