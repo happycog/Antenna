@@ -2,10 +2,10 @@
 
 return array(
       'author'      => 'Matt Weinberg',
-      'author_url'  => 'http://www.VectorMediaGroup.com',
+      'author_url'  => 'https://www.happycog.com',
       'name'        => 'Antenna',
       'description' => 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
-      'version'     => '2.2',
+      'version'     => '2.3',
       'namespace'   => 'Vector\Antenna',
-      'docs_url'    => 'https://github.com/vector/antenna'
+      'docs_url'    => 'https://github.com/happycog/antenna'
 );

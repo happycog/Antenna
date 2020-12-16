@@ -10,11 +10,11 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.2',
+	'pi_version'		=> '2.3',
 	'pi_author'			=> 'Matt Weinberg',
-	'pi_author_url'		=> 'http://www.VectorMediaGroup.com',
+	'pi_author_url'		=> 'https://www.happycog.com.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
-	'pi_usage'			=> 'https://github.com/vector/antenna'
+	'pi_usage'			=> 'https://github.com/happycog/antenna'
 );
 
 /**
@@ -142,9 +142,9 @@ class Antenna
 			// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
 			if (empty($max_height)) $max_height = "&maxheight=" . $max_width;
 			
-			$url = 'http://www.youtube.com/oembed?format=xml&iframe=1' . ($is_https ? '&scheme=https' : '') . '&url=';
+			$url = 'https://www.youtube.com/oembed?format=xml&iframe=1' . ($is_https ? '&scheme=https' : '') . '&url=';
 		} elseif (strpos($video_url, "vimeo.com/") !== FALSE) {
-			$url = 'http' . ($is_https ? 's' : '') . '://vimeo.com/api/oembed.xml?url=';
+			$url = 'https' . ($is_https ? 's' : '') . '://vimeo.com/api/oembed.xml?url=';
 		} elseif (strpos($video_url, "wistia.com/") !== FALSE) {
 			$url = 'http://app.wistia.com/embed/oembed.xml?url=';
 		} elseif (strpos($video_url, "viddler.com/") !== FALSE) {
