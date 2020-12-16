@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // Leaving this for EE 2 compatibility
 $plugin_info = array(
 	'pi_name'			=> 'Antenna',
-	'pi_version'		=> '2.3',
+	'pi_version'		=> '2.3.1',
 	'pi_author'			=> 'Matt Weinberg',
 	'pi_author_url'		=> 'https://www.happycog.com.com',
 	'pi_description'	=> 'Returns the embed code and various pieces of metadata for YouTube, Vimeo, Wistia, and Viddler Videos',
@@ -139,9 +139,6 @@ class Antenna
 
 		// If it's not YouTube, Vimeo, Wistia, or Viddler bail
 		if (strpos($video_url, "youtube.com/") !== FALSE OR strpos($video_url, "youtu.be/") !== FALSE) {
-			// Correct for a bug in YouTube response if only maxheight is set and the video is over 612px wide
-			if (empty($max_height)) $max_height = "&maxheight=" . $max_width;
-			
 			$url = 'https://www.youtube.com/oembed?format=xml&iframe=1' . ($is_https ? '&scheme=https' : '') . '&url=';
 		} elseif (strpos($video_url, "vimeo.com/") !== FALSE) {
 			$url = 'https' . ($is_https ? 's' : '') . '://vimeo.com/api/oembed.xml?url=';
